@@ -1,0 +1,43 @@
+{% extends 'solar_web/base.html' %}
+{% block content %}
+<section class="relative py-20 px-4 sm:px-6 bg-slate-950 overflow-hidden">
+    <div class="absolute inset-0 bg-[linear-gradient(to_right,#0f172a_1px,transparent_1px),linear-gradient(to_bottom,#0f172a_1px,transparent_1px)] bg-[size:4rem_4rem]"></div>
+    <div class="absolute top-1/4 right-0 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl animate-pulse"></div>
+
+    <div class="max-w-7xl mx-auto relative z-10 space-y-16">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+            <span class="text-amber-400 font-mono text-xs font-bold tracking-widest uppercase bg-amber-500/10 px-3 py-1 rounded-full border border-amber-500/20">// High-Tension Transmission Control</span>
+            <h1 class="text-4xl sm:text-6xl font-black text-white tracking-tight">Industrial Megawatt Solar Architecture</h1>
+            <p class="text-slate-400 text-sm sm:text-base leading-relaxed">Turnkey engineering architectures optimized explicitly for complex heavy machinery loads, high-voltage processing units, and high structural resilience.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-3 gap-8">
+            <div class="bg-slate-900/60 p-8 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition-all">
+                <div class="text-amber-400 font-mono text-2xl font-bold mb-4">01 // Zero Penetration</div>
+                <h3 class="text-lg font-bold text-white mb-2">Non-Penetrating Structural Matrix</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Advanced structural mount designs preventing damage to standing seam and industrial roof sheets, eliminating leaks while remaining structurally secure during intense monsoons.</p>
+            </div>
+            <div class="bg-slate-900/60 p-8 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition-all">
+                <div class="text-amber-400 font-mono text-2xl font-bold mb-4">02 // Structural Modeling</div>
+                <h3 class="text-lg font-bold text-white mb-2">Wind Velocity Rating ($180\text{ km/h}$)</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Engineered structural steel supports calculated via specialized finite element analysis software to withstand severe wind forces in coastal regions across Southern India.</p>
+            </div>
+            <div class="bg-slate-900/60 p-8 rounded-2xl border border-slate-800 hover:border-amber-500/30 transition-all">
+                <div class="text-amber-400 font-mono text-2xl font-bold mb-4">03 // Phase Matching</div>
+                <h3 class="text-lg font-bold text-white mb-2">Harmonic Control Array</h3>
+                <p class="text-slate-400 text-xs leading-relaxed">Active filtering techniques maintain low total harmonic distortion levels, matching grid requirements and avoiding reactive utility financial penalties.</p>
+            </div>
+        </div>
+
+        <div class="bg-gradient-to-r from-slate-900 to-slate-950 p-8 md:p-12 rounded-3xl border border-slate-800 flex flex-col md:flex-row items-center justify-between gap-8">
+            <div class="space-y-4 max-w-2xl">
+                <h3 class="text-2xl font-black text-white">Ready for a Geotechnical Site Analysis?</h3>
+                <p class="text-slate-400 text-xs sm:text-sm">Our in-house engineering team conducts detailed soil analysis, structural weight evaluations, and solar shade mapping to build your custom generation profile.</p>
+            </div>
+            <a href="{% url 'contact_desk' %}" class="px-6 py-4 bg-amber-500 hover:bg-amber-400 text-slate-950 font-black text-xs uppercase tracking-widest rounded-xl transition-all shadow-lg shrink-0">
+                Initiate Engineering Site Survey &rarr;
+            </a>
+        </div>
+    </div>
+</section>
+{% endblock %}

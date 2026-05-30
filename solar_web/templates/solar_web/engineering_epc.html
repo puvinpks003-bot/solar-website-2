@@ -1,0 +1,49 @@
+{% extends 'solar_web/base.html' %}
+{% block content %}
+<section class="py-20 px-4 sm:px-6 bg-slate-950">
+    <div class="max-w-7xl mx-auto space-y-16">
+        <div class="flex flex-col md:flex-row items-start md:items-center justify-between gap-6 border-b border-slate-800 pb-8">
+            <div class="space-y-2">
+                <span class="text-amber-500 font-mono text-xs uppercase tracking-widest">// Procurement Engineering Controls</span>
+                <h1 class="text-4xl font-black text-white tracking-tight">EPC Execution Blueprint</h1>
+            </div>
+            <p class="text-slate-400 text-xs sm:text-sm max-w-md font-light">
+                Our Engineering, Procurement, and Construction framework combines advanced technology and robust site workflows to deliver systems optimized for maximum generation yield.
+            </p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-12 items-center">
+            <div class="space-y-6">
+                <h3 class="text-xl font-bold text-white font-mono">// Premium Tier-1 Materials Specification</h3>
+                <p class="text-slate-400 text-xs sm:text-sm leading-relaxed">
+                    We source exclusively from Tier-1 BloombergNEF-rated manufacturers. Systems combine high-yield N-Type TOPCon bifacial photovoltaic panel elements with high-efficiency smart tracking central conversion strings.
+                </p>
+                <ul class="space-y-2 text-xs font-mono text-slate-300">
+                    <li class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> 
+                        Module Yield Capacity Floor: 22.5% Efficiency Index Minimum
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> 
+                        Galvanized Steel Structure Protection: $80\mu\text{m}$ Zinc Coating Depth
+                    </li>
+                    <li class="flex items-center gap-2">
+                        <span class="w-1.5 h-1.5 bg-amber-500 rounded-full"></span> 
+                        Inverter Core Efficiency: Smart MPPT Yield Adapters ($\ge 98.7\%$)
+                    </li>
+                </ul>
+            </div>
+            <div class="border border-slate-800 p-8 rounded-2xl bg-slate-900/40 relative overflow-hidden group">
+                <div class="absolute inset-0 opacity-10 bg-[radial-gradient(#fff_1px,transparent_1px)] bg-[size:10px_10px]"></div>
+                <h4 class="text-xs uppercase font-mono font-bold text-amber-400 tracking-wider mb-4">// System Cross-Section Topology</h4>
+                <div class="space-y-3 font-mono text-[10px] text-slate-400">
+                    <div class="p-3 border border-slate-800 rounded bg-slate-950">PV ARRAY Layer // High-Yield Bifacial Matrix Grid</div>
+                    <div class="p-3 border border-slate-800 rounded bg-slate-950">DC CONVERTER Node // Multi-Channel Maximum Power Point Optimizers</div>
+                    <div class="p-3 border border-slate-800 rounded bg-slate-950">PROTECTION Core // Dynamic SPD Isolators & Rapid Arc Interrupters</div>
+                    <div class="p-3 border border-slate-800 rounded bg-slate-950">UTILITY Interface // Smart Bi-Directional Net-Meters</div>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

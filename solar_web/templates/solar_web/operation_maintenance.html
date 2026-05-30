@@ -1,0 +1,29 @@
+{% extends 'solar_web/base.html' %}
+{% block content %}
+<section class="py-20 px-4 sm:px-6 bg-slate-950">
+    <div class="max-w-6xl mx-auto space-y-12">
+        <div class="text-center max-w-3xl mx-auto space-y-4">
+            <span class="text-amber-500 font-mono text-xs uppercase tracking-widest">Asset Lifecycle Management</span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white">Preventative Asset Operations & O&M</h1>
+            <p class="text-slate-400 text-xs sm:text-sm">Solar arrays operate in demanding environments. Our ongoing operations and maintenance management framework protects generation performance across the entire 25-year system lifecycle warranty.</p>
+        </div>
+
+        <div class="grid grid-cols-1 md:grid-cols-2 gap-8 pt-8">
+            <div class="p-6 bg-slate-900 rounded-xl border border-slate-800 flex gap-4">
+                <div class="text-amber-400 font-mono text-lg font-bold">A //</div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-white text-base">Thermal Imaging Drone Diagnostics</h4>
+                    <p class="text-slate-400 font-sans text-xs leading-relaxed">Automated aerial drone surveys track thermal signatures across the array, identifying and correcting micro-cracks and module defects before they impact production strings.</p>
+                </div>
+            </div>
+            <div class="p-6 bg-slate-900 rounded-xl border border-slate-800 flex gap-4">
+                <div class="text-amber-400 font-mono text-lg font-bold">B //</div>
+                <div class="space-y-2">
+                    <h4 class="font-bold text-white text-base">Predictive Cloud Performance Tracking</h4>
+                    <p class="text-slate-400 font-sans text-xs leading-relaxed">System performance is continuously analyzed against local weather data. Machine learning systems trace and flag performance deviations down to individual inverter strings, coordinating technician response teams effectively.</p>
+                </div>
+            </div>
+        </div>
+    </div>
+</section>
+{% endblock %}

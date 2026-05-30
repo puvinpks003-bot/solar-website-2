@@ -1,0 +1,611 @@
+{% extends 'solar_web/base.html' %}
+{% block content %}
+
+<style>
+    @keyframes pulse-slow {
+        0%, 100% { opacity: 0.15; transform: scale(1); }
+        50% { opacity: 0.35; transform: scale(1.03); }
+    }
+    .animate-pulse-slow { animation: pulse-slow 8s infinite ease-in-out; }
+    
+    .scroll-reveal {
+        view-timeline-name: --reveal;
+        view-timeline-axis: block;
+        animation-name: show-up;
+        animation-fill-mode: both;
+        animation-timeline: --reveal;
+        animation-range: entry 5% cover 22%;
+    }
+    @keyframes show-up {
+        from { opacity: 0; transform: translateY(30px) scale(0.98); filter: blur(4px); }
+        to { opacity: 1; transform: translateY(0) scale(1); filter: blur(0); }
+    }
+
+    .grid-reveal {
+        view-timeline-name: --grid-reveal;
+        view-timeline-axis: block;
+        animation-name: grid-fade;
+        animation-fill-mode: both;
+        animation-timeline: --grid-reveal;
+        animation-range: entry 2% cover 20%;
+    }
+    @keyframes grid-fade {
+        from { opacity: 0; transform: translateY(25px); }
+        to { opacity: 1; transform: translateY(0); }
+    }
+
+    .aurora-bg { position: relative; }
+    .aurora-bg::before {
+        content: ""; position: absolute; top: 0; left: 0; right: 0; bottom: 0;
+        background: radial-gradient(circle at 15% 20%, rgba(245, 158, 11, 0.04) 0%, transparent 50%),
+                    radial-gradient(circle at 85% 80%, rgba(37, 99, 235, 0.04) 0%, transparent 50%);
+        z-index: 0; pointer-events: none;
+    }
+
+    .glass-panel {
+        background: rgba(15, 23, 42, 0.6);
+        backdrop-filter: blur(16px);
+        -webkit-backdrop-filter: blur(16px);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+    }
+
+    input[type="range"]::-webkit-slider-thumb {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 16px;
+        height: 16px;
+        border-radius: 50%;
+        background: #f59e0b;
+        cursor: pointer;
+        box-shadow: 0 0 10px rgba(245, 158, 11, 0.5);
+    }
+</style>
+
+<div id="solar-preloader" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 transition-all duration-700 ease-out">
+    <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px]"></div>
+    <div class="w-full max-w-sm glass-panel rounded-2xl border border-slate-800/80 p-6 space-y-6 relative overflow-hidden">
+        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+            <div class="flex items-center gap-2">
+                <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
+                <span class="text-[9px] font-mono text-slate-400 font-bold uppercase tracking-wider">System: Connected</span>
+            </div>
+            <span class="text-[9px] font-mono text-slate-500 font-bold">SYS_REF: #TN-2026</span>
+        </div>
+        <div class="grid grid-cols-2 gap-4">
+            <div class="bg-slate-950/80 border border-slate-900 rounded-xl p-3 space-y-0.5">
+                <span class="text-[8px] font-mono text-slate-500 font-bold block uppercase tracking-tight">Irradiance Profile</span>
+                <div id="telemetry-irr" class="text-sm font-mono font-black text-slate-300">0 W/m²</div>
+            </div>
+            <div class="bg-slate-950/80 border border-slate-900 rounded-xl p-3 space-y-0.5">
+                <span class="text-[8px] font-mono text-slate-500 font-bold block uppercase tracking-tight">String Generation</span>
+                <div id="telemetry-gen" class="text-sm font-mono font-black text-amber-500">0.00 kW</div>
+            </div>
+        </div>
+        <div class="space-y-2">
+            <div class="flex justify-between items-end">
+                <div class="space-y-0.5">
+                    <span class="text-[8px] font-mono text-slate-500 font-bold block uppercase tracking-tight">Diagnostic Pipeline</span>
+                    <div id="preloader-status" class="text-[10px] font-mono text-white font-bold uppercase tracking-wide truncate max-w-[240px]">Booting Telemetry Arrays...</div>
+                </div>
+                <div id="preloader-percentage" class="text-xl font-mono font-black text-white">0%</div>
+            </div>
+            <div class="w-full h-1 bg-slate-900 rounded-full overflow-hidden">
+                <div id="preloader-progress-bar" class="w-0 h-full bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 transition-all duration-100 rounded-full"></div>
+            </div>
+        </div>
+    </div>
+</div>
+
+<div id="main-content" class="opacity-0 transition-opacity duration-1000 ease-in bg-slate-950 min-h-screen text-slate-100 font-sans antialiased">
+
+    <section id="home" class="relative min-h-[85vh] flex items-center justify-center overflow-hidden px-4 sm:px-6 pt-20 pb-20">
+        <div class="absolute inset-0 opacity-10 bg-[linear-gradient(to_right,#334155_1px,transparent_1px),linear-gradient(to_bottom,#334155_1px,transparent_1px)] bg-[size:4rem_4rem] [mask-image:radial-gradient(ellipse_60%_50%_at_50%_50%,#000_70%,transparent_100%)]"></div>
+        <div class="absolute -top-20 -right-20 w-64 h-64 md:w-96 md:h-96 bg-amber-500/10 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="absolute -bottom-20 -left-20 w-64 h-64 md:w-96 md:h-96 bg-blue-600/10 rounded-full blur-3xl animate-pulse-slow" style="animation-delay: 3s;"></div>
+        
+        <div class="w-full max-w-5xl mx-auto text-center relative z-10 space-y-6 md:space-y-8">
+            <span class="inline-flex items-center gap-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 text-amber-400 font-bold px-4 py-1.5 rounded-full text-[10px] md:text-xs uppercase tracking-widest border border-amber-500/20 shadow-lg backdrop-blur-md">
+                <span class="w-1.5 h-1.5 rounded-full bg-amber-400 animate-ping"></span>Tamil Nadu's Tier-1 Solar EPC
+            </span>
+            <h1 class="text-4xl sm:text-5xl md:text-6xl lg:text-7xl font-black tracking-tight leading-tight bg-gradient-to-r from-white via-slate-100 to-slate-400 bg-clip-text text-transparent break-words">Engineering <br class="sm:hidden">Megawatt-Scale <br class="hidden sm:inline">Solar Infrastructure</h1>
+            <p class="text-sm sm:text-base md:text-lg text-slate-400 max-w-2xl mx-auto leading-relaxed font-light px-2">SIP INFRA designs, builds, and deploys high-yield captive solar power grids for heavy industries, commercial parks, and residential layouts across South India.</p>
+            <div class="flex flex-col sm:flex-row gap-4 justify-center items-center pt-4 max-w-xs sm:max-w-none mx-auto w-full px-4 sm:px-0">
+                <a href="#calculator" class="w-full sm:w-auto text-center px-7 py-3.5 bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 font-extrabold rounded-xl shadow-[0_4px_20px_rgba(245,158,11,0.2)] hover:shadow-[0_4px_25px_rgba(245,158,11,0.4)] transition-all duration-300 transform hover:-translate-y-0.5 text-sm">Run Energy ROI Calculator</a>
+                <a href="#contact" class="w-full sm:w-auto text-center px-7 py-3.5 bg-slate-900/90 text-white font-medium rounded-xl border border-slate-800 hover:border-amber-500/30 backdrop-blur-sm transition-all duration-300 text-sm hover:bg-slate-800">Schedule Site Survey</a>
+            </div>
+        </div>
+    </section>
+
+    <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-20 -mt-8 mb-16">
+        <div class="grid grid-cols-2 lg:grid-cols-4 gap-4">
+            <div class="glass-panel p-5 rounded-xl shadow-xl text-center group hover:border-amber-500/30 transition-all duration-300">
+                <div class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">15+ MW</div>
+                <div class="text-[10px] text-slate-400 font-bold tracking-wider uppercase mt-1">Installed Capacity</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl shadow-xl text-center group hover:border-amber-500/30 transition-all duration-300">
+                <div class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">450+</div>
+                <div class="text-[10px] text-slate-400 font-bold tracking-wider uppercase mt-1">Commissioned Plants</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl shadow-xl text-center group hover:border-amber-500/30 transition-all duration-300">
+                <div class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">100%</div>
+                <div class="text-[10px] text-slate-400 font-bold tracking-wider uppercase mt-1">Subsidy Processing</div>
+            </div>
+            <div class="glass-panel p-5 rounded-xl shadow-xl text-center group hover:border-amber-500/30 transition-all duration-300">
+                <div class="text-2xl md:text-3xl font-black text-transparent bg-clip-text bg-gradient-to-r from-amber-400 to-orange-400">25 Yrs</div>
+                <div class="text-[10px] text-slate-400 font-bold tracking-wider uppercase mt-1">Performance Warranty</div>
+            </div>
+        </div>
+    </div>
+
+    <section id="calculator" class="max-w-7xl mx-auto py-16 px-4 sm:px-6 scroll-reveal aurora-bg">
+        <div class="text-center max-w-3xl mx-auto mb-12">
+            <span class="text-amber-500 font-bold uppercase tracking-widest text-[10px] block">Industrial Asset Assessment Desk</span>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">Pincode-Calibrated Solar Sizing Matrix</h2>
+            <p class="text-slate-400 text-xs mt-2">Enter or select a Tamil Nadu industrial pincode zone below to adapt the GHI radiation curves, thermal performance index, and space loading thresholds instantly.</p>
+        </div>
+
+        <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch">
+            <div class="lg:col-span-5 bg-slate-900/60 border border-slate-800/80 shadow-xl rounded-2xl p-6 flex flex-col justify-between space-y-6">
+                <div class="space-y-5">
+                    <h3 class="text-sm font-black text-white border-b border-slate-800 pb-3 flex items-center gap-2">
+                        <span class="w-1.5 h-4 bg-amber-500 rounded-sm"></span> Asset Configurations
+                    </h3>
+                    
+                    <div class="space-y-1.5">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Site PIN Code Selector / Input *</label>
+                            <span id="pincode-validation-msg" class="text-[10px] font-mono text-amber-500 font-semibold"></span>
+                        </div>
+                        <input type="text" id="input-pincode" list="pincode-options" autocomplete="off" value="641601" oninput="parsePincodeMetrics()" placeholder="Type 6-digit Pincode..." class="p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-white font-mono font-bold tracking-widest">
+                        
+                        <datalist id="pincode-options">
+                            <option value="641601">641601 — Tiruppur Textile Hub</option>
+                            <option value="641001">641001 — Coimbatore Engineering Clusters</option>
+                            <option value="638001">638001 — Erode Industrial Grid</option>
+                            <option value="628001">628001 — Tuticorin Port/High Irradiation</option>
+                            <option value="625001">625001 — Madurai Southern Hub</option>
+                            <option value="600001">600001 — Chennai Core Grid Variant</option>
+                            <option value="602105">602105 — Sriperumbudur Automotive Strip</option>
+                            <option value="636001">636001 — Salem Metallurgical Zone</option>
+                            <option value="639001">639001 — Karur Manufacturing Hub</option>
+                            <option value="620001">620001 — Trichy Central Heavy Industries</option>
+                        </datalist>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Target AC Capacity</label>
+                            <div class="flex items-center gap-1">
+                                <input type="number" id="input-capacity-num" min="100" max="25000" value="1000" oninput="syncSliderFromNum()" class="w-20 p-1 bg-slate-950 border border-slate-800 rounded text-right font-mono font-bold text-xs text-amber-400 outline-none focus:border-amber-500">
+                                <span class="text-xs font-bold text-slate-400">kW AC</span>
+                            </div>
+                        </div>
+                        <input type="range" id="input-capacity-slide" min="100" max="25000" step="100" value="1000" oninput="syncNumFromSlider()" class="w-full accent-amber-500 h-1.5 bg-slate-950 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[9px] text-slate-500 font-medium font-mono"><span>100 kW</span><span>5 MW</span><span>10 MW</span><span>25 MW</span></div>
+                    </div>
+
+                    <div class="space-y-2">
+                        <div class="flex justify-between items-center">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider">Available Clear Area</label>
+                            <span id="area-display" class="text-xs font-black text-slate-300 font-mono">75,000 Sq. Ft.</span>
+                        </div>
+                        <input type="range" id="input-area" min="5000" max="1500000" step="5000" value="75000" oninput="calculateSolarROI()" class="w-full accent-amber-500 h-1.5 bg-slate-950 rounded-lg cursor-pointer">
+                        <div class="flex justify-between text-[9px] text-slate-500 font-medium font-mono"><span>5K Sq.Ft</span><span>500K Sq.Ft</span><span>1M Sq.Ft</span><span>1.5M Sq.Ft</span></div>
+                    </div>
+
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Current TANGEDCO Tariff Structure</label>
+                        <select id="input-tariff" onchange="calculateSolarROI()" class="p-3 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-slate-300 font-mono">
+                            <option value="8.50">HT Industrial (Tier-1 Heavy Manufacturing) — ₹8.50 / Unit</option>
+                            <option value="9.80">Commercial Complex / IT Parks — ₹9.80 / Unit</option>
+                            <option value="7.50">LT Industrial / Engineering Units — ₹7.50 / Unit</option>
+                        </select>
+                    </div>
+                </div>
+
+                <div class="pt-4 border-t border-slate-800/60">
+                    <div class="bg-slate-950/80 rounded-xl p-3.5 border border-slate-850 flex items-start gap-3">
+                        <svg class="w-4 h-4 text-amber-500 shrink-0 mt-0.5" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M13 16h-1v-4h-1m1-4h.01M21 12a9 9 0 11-18 0 9 9 0 0118 0z"></path></svg>
+                        <div class="text-[10px] text-slate-400 leading-normal space-y-1">
+                            <p>Calculations enforce strict PR limits: <span class="text-slate-200 font-semibold">78.5% Plant Performance Ratio</span> factoring in system clipping degradation metrics.</p>
+                            <p class="text-slate-500 font-mono text-[9px]">Calculated footprint limits: Roof ~80 Sq.Ft/kW; Ground ~55 Sq.Ft/kW.</p>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <div class="lg:col-span-7 bg-slate-900 border border-slate-800 shadow-2xl rounded-2xl p-6 md:p-8 text-white grid grid-cols-1 sm:grid-cols-2 gap-4 relative overflow-hidden">
+                <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:16px_16px]"></div>
+                
+                <div class="sm:col-span-2 border-b border-slate-800 pb-2 flex justify-between items-center relative z-10">
+                    <h3 class="text-xs font-black tracking-wider text-amber-400 uppercase">// Industrial Pre-Feasibility Dashboard</h3>
+                    <span id="system-alert-tag" class="text-[9px] bg-emerald-500/10 text-emerald-400 font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-emerald-500/20">Feasible Matrix</span>
+                </div>
+                
+                <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl relative z-10 space-y-0.5">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Optimal DC Modules Profile</span>
+                    <div id="out-dc-size" class="text-xl font-black text-slate-200 font-mono">1,300 kWp</div>
+                    <p class="text-[10px] text-slate-500 leading-tight">Configured with 1.30x Overloading ratio using N-Type TOPCon Mono modules.</p>
+                </div>
+                
+                <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl relative z-10 space-y-0.5">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Est. Annual Generation (Yr 1)</span>
+                    <div id="out-generation" class="text-xl font-black text-amber-400 font-mono">1,540,200 kWh</div>
+                    <p id="out-cuf" class="text-[10px] text-slate-500 leading-tight">Calculated Capacity Utilization Factor: 17.58%</p>
+                </div>
+                
+                <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl relative z-10 space-y-0.5">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Est. Complete Turnkey Capex</span>
+                    <div id="out-cost" class="text-xl font-black text-slate-200 font-mono">₹ 4.65 Crores</div>
+                    <p class="text-[10px] text-slate-500 leading-tight">Includes structural civil works, inverters, cabling & TNEB CEIG approvals handling.</p>
+                </div>
+                
+                <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl relative z-10 space-y-0.5">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Financial Break-Even Horizon</span>
+                    <div id="out-payback" class="text-xl font-black text-slate-200 font-mono">3.4 Years</div>
+                    <p class="text-[10px] text-emerald-400 font-medium leading-tight">Factoring accelerated 40% depreciation.</p>
+                </div>
+
+                <div class="bg-slate-950/40 border border-slate-800/60 p-4 rounded-xl relative z-10 space-y-0.5 sm:col-span-2">
+                    <span class="text-[9px] font-bold text-slate-400 uppercase tracking-widest block">Infrastructure Footprint Validation Status</span>
+                    <div id="out-footprint-status" class="text-xs font-semibold text-slate-300 mt-1 flex items-center gap-2">Checking threshold mappings...</div>
+                </div>
+                
+                <div class="sm:col-span-2 bg-gradient-to-r from-amber-500/10 to-orange-500/10 border border-amber-500/25 p-4 rounded-xl flex flex-col sm:flex-row justify-between items-start sm:items-center gap-4 relative z-10 mt-2">
+                    <div>
+                        <span class="text-[9px] font-bold text-amber-400 uppercase tracking-widest block">25-Year Operational Lifecycle Savings</span>
+                        <div id="out-savings" class="text-2xl font-black text-amber-400 font-mono mt-0.5">₹ 28.45 Crores</div>
+                    </div>
+                    <a href="#contact" onclick="exportCalculationsToForm()" class="w-full sm:w-auto text-center px-5 py-3 bg-amber-500 text-slate-950 text-xs font-extrabold uppercase tracking-wider rounded-lg hover:bg-amber-400 transition-all shadow-md">Request Engineering Dossier</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section class="max-w-7xl mx-auto py-16 px-4 sm:px-6 grid grid-cols-1 md:grid-cols-2 gap-12 items-center scroll-reveal">
+        <div class="space-y-4 md:space-y-6 text-center md:text-left">
+            <span class="text-amber-500 font-bold uppercase tracking-widest text-[11px] block">Financial Reality</span>
+            <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white leading-tight">Why Solar is Crucial for Tamil Nadu Industries</h2>
+            <p class="text-slate-400 leading-relaxed text-sm">With regular structural changes to <span class="font-bold text-slate-200">High-Tension (HT) and Low-Tension (LT)</span> commercial electricity tariffs across TANGEDCO sectors, power outlays are rapidly devouring corporate operating margins.</p>
+            <p class="text-slate-400 leading-relaxed text-sm">SIP INFRA transitions your vacant acreage or factory roofs into dynamic, <span class="font-bold text-amber-400">high-yield captive assets</span>. We safely lower your dependence on grid volatility, lock down fixed operational costs for a quarter-century, and unlock key green tax classifications.</p>
+        </div>
+        <div class="relative group w-full max-w-md md:max-w-none mx-auto">
+            <div class="absolute inset-0 bg-gradient-to-r from-amber-500 to-orange-500 rounded-2xl blur-2xl opacity-10"></div>
+            <div class="relative rounded-2xl overflow-hidden border border-slate-800 bg-slate-900">
+                <img src="https://images.unsplash.com/photo-1509391366360-2e959784a276?auto=format&fit=crop&w=800&q=80" alt="SIP INFRA Solar Field" class="w-full h-64 sm:h-72 object-cover opacity-80 group-hover:scale-102 transition-transform duration-500">
+                <div class="absolute inset-0 bg-gradient-to-t from-slate-950 via-transparent to-transparent"></div>
+                <div class="absolute bottom-4 left-4 right-4 p-4 bg-slate-950/90 backdrop-blur-md rounded-xl border border-slate-800">
+                    <span class="text-amber-400 font-mono text-[9px] uppercase tracking-wider block mb-0.5">// Structural Compliance</span>
+                    <p class="text-[11px] text-slate-400 leading-normal">High-penetration structural wind modeling optimized for localized coastal monsoons.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="services" class="bg-slate-900/60 border-y border-slate-900 text-white py-16 px-4 sm:px-6 relative overflow-hidden">
+        <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#fff_1px,transparent_1px)] [background-size:24px_24px]"></div>
+        <div class="max-w-7xl mx-auto relative z-10">
+            <div class="text-center max-w-3xl mx-auto mb-12 scroll-reveal">
+                <span class="text-amber-400 font-bold uppercase tracking-widest text-[11px]">Capabilities Overview</span>
+                <h2 class="text-3xl font-black tracking-tight mt-1">EPC Solutions Optimized for Return</h2>
+            </div>
+            <div class="grid grid-cols-1 md:grid-cols-3 gap-6 lg:gap-8 grid-reveal">
+                <div class="group bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-300">
+                    <div class="space-y-4">
+                        <div class="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-400 border border-amber-500/20 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M19 21V5a2 2 0 00-2-2H7a2 2 0 00-2 2v16m14 0h2m-2 0h-5m-9 0H3m2 0h5M9 7h1m-1 4h1m4-4h1m-1 4h1m-5 10v-5a1 1 0 011-1h2a1 1 0 011 1v5m-4 0h4"></path></svg>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">Industrial Plants (MW Scale)</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Turnkey grid matching for high-tension operational frameworks. Features <span class="text-amber-400/90 font-medium">non-penetrating mechanical mounting matrix deployments</span>, low transmission loss line balancing, and automated safety shutdowns.</p>
+                    </div>
+                    <a href="https://wa.me/919999999999?text=Hi%20SIP%20INFRA,%20I%20am%20interested%20in%20an%20Industrial%20Megawatt%20Solar%20Setup." target="_blank" class="mt-6 text-xs font-bold text-amber-400 flex items-center gap-1 opacity-80 hover:opacity-100 group-hover:translate-x-1 transition-all">Inquire via WhatsApp &rarr;</a>
+                </div>
+                
+                <div class="group bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-300">
+                    <div class="space-y-4">
+                        <div class="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-400 border border-amber-500/20 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M3 12l2-2m0 0l7-7 7 7M5 10v10a1 1 0 001 1h3m10-11l2 2m-2-2v10a1 1 0 01-1 1h-3m-6 0a1 1 0 001-1v-4a1 1 0 011-1h2a1 1 0 011 1v4a1 1 0 001 1m-6 0h6"></path></svg>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">Residential Rooftop Systems</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Engineered to cleanly eliminate domestic overhead accounts. Integrated net-metering structures, <span class="text-amber-400/90 font-medium">high-lifecycle hybrid battery configurations</span>, and intelligent distribution controls.</p>
+                    </div>
+                    <a href="https://wa.me/919999999999?text=Hi%20SIP%20INFRA,%20I%20want%20to%20know%20more%20about%20Residential%20Rooftop%20Solar%20subsidies." target="_blank" class="mt-6 text-xs font-bold text-amber-400 flex items-center gap-1 opacity-80 hover:opacity-100 group-hover:translate-x-1 transition-all">Inquire via WhatsApp &rarr;</a>
+                </div>
+
+                <div class="group bg-slate-950 p-6 rounded-2xl border border-slate-800 flex flex-col justify-between hover:border-amber-500/30 transition-all duration-300">
+                    <div class="space-y-4">
+                        <div class="w-9 h-9 bg-amber-500/10 rounded-lg flex items-center justify-center text-amber-400 border border-amber-500/20 group-hover:bg-amber-500 group-hover:text-slate-950 transition-colors duration-300">
+                            <svg class="w-4 h-4" fill="none" stroke="currentColor" viewBox="0 0 24 24"><path stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M9 19v-6a2 2 0 00-2-2H5a2 2 0 00-2 2v6a2 2 0 002 2h2a2 2 0 002-2zm0 0V9a2 2 0 012-2h2a2 2 0 012 2v10m-6 0a2 2 0 002 2h2a2 2 0 002-2m0 0V5a2 2 0 012-2h2a2 2 0 012 2v14a2 2 0 01-2 2h-2a2 2 0 01-2-2z"></path></svg>
+                        </div>
+                        <h3 class="text-base font-bold text-slate-100">Asset Management & O&M</h3>
+                        <p class="text-slate-400 text-xs leading-relaxed">Continuous production tracking via smartphone app integrations. Scheduled panel wash deployments and <span class="text-amber-400/90 font-medium">thermal imaging drone diagnostics</span> to maintain peak string level efficiencies.</p>
+                    </div>
+                    <a href="https://wa.me/919999999999?text=Hi%20SIP%20INFRA,%20I%20need%20maintenance%20or%20O%20and%20M%20support%20for%20my%20solar%20plant." target="_blank" class="mt-6 text-xs font-bold text-amber-400 flex items-center gap-1 opacity-80 hover:opacity-100 group-hover:translate-x-1 transition-all">Inquire via WhatsApp &rarr;</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <section id="projects" class="max-w-7xl mx-auto py-16 px-4 sm:px-6">
+        <div class="mb-12 scroll-reveal text-center md:text-left">
+            <span class="text-amber-500 font-bold uppercase tracking-widest text-[11px]">Proven Performance Records</span>
+            <h2 class="text-3xl font-black tracking-tight text-white mt-1">Real Engineering Deployments</h2>
+        </div>
+        
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-6 lg:gap-8 grid-reveal">
+            {% for project in mw_projects %}
+            <div class="group bg-slate-900 rounded-2xl shadow-sm overflow-hidden border border-slate-850 hover:border-slate-800 transition-all duration-300">
+                <div class="relative overflow-hidden h-48">
+                    {% if project.image %}<img src="{{ project.image.url }}" alt="{{ project.title }}" class="w-full h-full object-cover group-hover:scale-102 transition-transform duration-500">{% endif %}
+                    <span class="absolute top-3 left-3 bg-slate-950/90 backdrop-blur-sm text-amber-400 text-[9px] font-bold uppercase tracking-wider px-2.5 py-1 rounded-full">{{ project.get_category_display }}</span>
+                </div>
+                <div class="p-5 space-y-2">
+                    <h3 class="text-base font-black text-white">{{ project.title }}</h3>
+                    <p class="text-[10px] text-slate-400 font-bold tracking-wide uppercase">{{ project.location }} | {{ project.capacity_kw }} kW</p>
+                    <p class="text-slate-400 text-xs leading-relaxed line-clamp-3">{{ project.description }}</p>
+                </div>
+            </div>
+            {% empty %}
+            <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800">
+                <div class="h-48 bg-slate-950 overflow-hidden"><img src="https://images.unsplash.com/photo-1508514177221-188b1cf16e9d?auto=format&fit=crop&w=600&q=80" alt="Spinning Mill Array" class="w-full h-full object-cover opacity-70 group-hover:scale-102 transition-transform duration-500"></div>
+                <div class="p-5 space-y-1.5">
+                    <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">Industrial MW Scale</span>
+                    <h3 class="text-base font-black text-white">1.2 MW Rooftop Array</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold">Textile Spinning Mill, Erode</p>
+                    <p class="text-slate-400 text-xs leading-relaxed">Engineered to offset utility structural loads while safely handling local intense building machine harmonics.</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800">
+                <div class="h-48 bg-slate-950 overflow-hidden"><img src="https://images.unsplash.com/photo-1613665813446-82a78c468a1d?auto=format&fit=crop&w=600&q=80" alt="Cold Storage Installation" class="w-full h-full object-cover opacity-70 group-hover:scale-102 transition-transform duration-500"></div>
+                <div class="p-5 space-y-1.5">
+                    <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">Commercial Setup</span>
+                    <h3 class="text-base font-black text-white">600 kW High-Yield Array</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold">Cold Storage Facility, Madurai</p>
+                    <p class="text-slate-400 text-xs leading-relaxed">Configured to buffer daytime cooling surges, protecting industrial compressors against high-demand grid penalties.</p>
+                </div>
+            </div>
+            <div class="bg-slate-900 rounded-2xl overflow-hidden border border-slate-800">
+                <div class="h-48 bg-slate-950 overflow-hidden"><img src="https://images.unsplash.com/photo-1548345680-f5475ea5df84?auto=format&fit=crop&w=600&q=80" alt="Villa Solar Setup" class="w-full h-full object-cover opacity-70 group-hover:scale-102 transition-transform duration-500"></div>
+                <div class="p-5 space-y-1.5">
+                    <span class="text-[9px] font-bold text-amber-400 uppercase tracking-wider">Residential Rooftop</span>
+                    <h3 class="text-base font-black text-white">15 kW Hybrid Configuration</h3>
+                    <p class="text-[10px] text-slate-400 font-semibold">Private Villa, Chennai</p>
+                    <p class="text-slate-400 text-xs leading-relaxed">Integrated alongside high-cycle lithium backup banks to provide complete self-sufficiency during coastal monsoon seasons.</p>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </section>
+
+    <section id="contact" class="max-w-7xl mx-auto py-12 px-4 sm:px-6 relative overflow-hidden">
+        <div class="absolute -top-40 -left-40 w-96 h-96 bg-amber-500/5 rounded-full blur-3xl animate-pulse-slow"></div>
+        <div class="max-w-4xl mx-auto bg-slate-900 border border-slate-800 p-6 sm:p-10 rounded-2xl shadow-2xl relative z-10">
+            <h3 class="text-xl font-black text-center tracking-tight text-white">Initiate Technical Feasibility Review</h3>
+            <p class="text-slate-400 text-center mb-8 text-xs max-w-sm mx-auto mt-1">Submit your calculations configuration straight to our design engineers for detailed single-line diagrams (SLD).</p>
+            
+            {% if messages %}{% for message in messages %}
+                <div class="p-4 rounded-xl font-semibold mb-6 text-center text-xs {% if message.tags == 'success' %}bg-emerald-500/10 text-emerald-400 border border-emerald-500/20{% else %}bg-rose-500/10 text-rose-400 border border-rose-500/20{% endif %}">{{ message }}</div>
+            {% endfor %}{% endif %}
+            
+            <form action="{% url 'submit_lead_view' %}" method="POST" class="space-y-4">
+                {% csrf_token %}
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Company / Entity Title *</label><input type="text" name="name" placeholder="Corporate Name" required class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-white transition-colors"></div>
+                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Primary WhatsApp Interface *</label><input type="text" name="phone" placeholder="Authorized Representative No." required class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-white transition-colors"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Corporate Email Identifier *</label><input type="email" name="email" placeholder="procurement@company.com" required class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-white transition-colors"></div>
+                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Plant Coordinates / Location *</label><input type="text" id="form-location" name="location" placeholder="Site Location / Mapped District" required class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-white transition-colors"></div>
+                </div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
+                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Mapped AC Scale (kW) *</label><input type="number" id="form-capacity" name="allocated_capacity" required class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-white transition-colors"></div>
+                    <div class="space-y-1.5">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Target Array Scale classification</label>
+                        <select id="form-scale" name="project_scale" class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-slate-300 transition-colors">
+                            <option value="MW">Industrial Megawatt Plant (&gt;100 kW)</option>
+                            <option value="COM">Commercial Complex (10 kW - 100 kW)</option>
+                            <option value="RES">Residential Layout (&lt;10 kW)</option>
+                        </select>
+                    </div>
+                </div>
+                <div class="space-y-1.5">
+                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Project Capex Mode Preference *</label>
+                    <select name="financial_assistance" class="p-3.5 bg-slate-950 border border-slate-800 rounded-xl focus:border-amber-500 w-full outline-none text-xs text-slate-300 w-full transition-colors">
+                        <option value="NONE">Self-Funded Investment / Corporate CAPEX Allocation</option>
+                        <option value="LOAN">Debt Financed / Term Infrastructure Loans requested</option>
+                        <option value="OPEX">Third Party OPEX / RESCO Model PPA Framework Arrangement</option>
+                    </select>
+                </div>
+                <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 p-3.5 rounded-xl font-extrabold text-xs shadow-xl hover:opacity-95 transition-all tracking-wider uppercase mt-2">Submit Pipeline to Technical Desk</button>
+            </form>
+        </div>
+    </section>
+
+</div>
+
+<script>
+    // Differentiated Geographic parameters based on explicit field studies across Tamil Nadu coordinates
+    const PIN_REGIONS = {
+        "60": { ghi: 4.85, tempLoss: 0.046, name: "Chennai Coastal Grid Corridor" },
+        "61": { ghi: 5.10, tempLoss: 0.039, name: "Thanjavur Delta Infrastructure Belt" },
+        "62": { ghi: 5.65, tempLoss: 0.052, name: "Tuticorin Southern High-Irradiation Plain" },
+        "63": { ghi: 5.25, tempLoss: 0.044, name: "Vellore Interior Structural Grid" },
+        "64": { ghi: 5.45, tempLoss: 0.041, name: "Tiruppur/Coimbatore Industrial Zone" },
+        "65": { ghi: 5.20, tempLoss: 0.042, name: "Trichy Central Manufacturing Basin" },
+        "66": { ghi: 4.95, tempLoss: 0.043, name: "Viluppuram Hinterland Sector" }
+    };
+
+    // Default variable presets initialization pointers
+    let calculatedGHI = 5.45;
+    let calculatedTempLoss = 0.041;
+    let interpretedLocationString = "Tiruppur/Coimbatore Industrial Zone";
+
+    function parsePincodeMetrics() {
+        const pinField = document.getElementById('input-pincode');
+        const validationMsg = document.getElementById('pincode-validation-msg');
+        let pin = pinField.value.trim();
+
+        if (pin.length < 2) {
+            validationMsg.innerText = "";
+            return;
+        }
+
+        let slice = pin.substring(0, 2);
+        
+        if (PIN_REGIONS[slice]) {
+            calculatedGHI = PIN_REGIONS[slice].ghi;
+            calculatedTempLoss = PIN_REGIONS[slice].tempLoss;
+            interpretedLocationString = PIN_REGIONS[slice].name;
+            validationMsg.innerText = `✓ Zone Mapped: ${interpretedLocationString}`;
+            validationMsg.className = "text-[10px] font-mono text-emerald-400 font-semibold";
+        } else {
+            validationMsg.innerText = "⚠️ Custom Zone Applied (Using TN Ambient Averages)";
+            validationMsg.className = "text-[10px] font-mono text-amber-500 font-semibold";
+            calculatedGHI = 5.15;
+            calculatedTempLoss = 0.043;
+            interpretedLocationString = "Generic Tamil Nadu Basin Matrix";
+        }
+
+        // Live refresh loops connected to state updates
+        calculateSolarROI();
+    }
+
+    document.addEventListener("DOMContentLoaded", function() {
+        const preloader = document.getElementById('solar-preloader');
+        const mainContent = document.getElementById('main-content');
+        const bar = document.getElementById('preloader-progress-bar');
+        const txt = document.getElementById('preloader-percentage');
+        const status = document.getElementById('preloader-status');
+        const irrText = document.getElementById('telemetry-irr');
+        const genText = document.getElementById('telemetry-gen');
+
+        const states = [
+            { t: 0, s: "Booting Telemetry Arrays..." },
+            { t: 25, s: "Mapping Regional Irradiance..." },
+            { t: 55, s: "Simulating String Array Voltages..." },
+            { t: 80, s: "Grid Injection Connection Safe..." }
+        ];
+
+        let p = 0;
+        const iv = setInterval(() => {
+            p += Math.floor(Math.random() * 8) + 4;
+            if (p > 100) p = 100;
+
+            bar.style.width = p + "%";
+            txt.innerText = p + "%";
+            
+            irrText.innerText = Math.round((p / 100) * 1025) + " W/m²";
+            genText.innerText = ((p / 100) * 14.85).toFixed(2) + " kW";
+
+            const match = states.reduce((acc, curr) => (p >= curr.t) ? curr : acc);
+            status.innerText = match.s;
+
+            if (p >= 100) {
+                clearInterval(iv);
+                preloader.style.opacity = '0';
+                preloader.style.pointerEvents = 'none';
+                mainContent.classList.replace('opacity-0', 'opacity-100');
+                setTimeout(() => { preloader.remove(); parsePincodeMetrics(); }, 700);
+            }
+        }, 90);
+    });
+
+    function syncSliderFromNum() {
+        const numInput = document.getElementById('input-capacity-num');
+        const sliderInput = document.getElementById('input-capacity-slide');
+        let val = parseFloat(numInput.value);
+        if (isNaN(val)) val = 100;
+        if (val < 100) val = 100;
+        if (val > 25000) val = 25000;
+        sliderInput.value = val;
+        calculateSolarROI();
+    }
+
+    function syncNumFromSlider() {
+        const numInput = document.getElementById('input-capacity-num');
+        const sliderInput = document.getElementById('input-capacity-slide');
+        numInput.value = sliderInput.value;
+        calculateSolarROI();
+    }
+
+    function calculateSolarROI() {
+        const targetAC_kW = parseFloat(document.getElementById('input-capacity-num').value) || 100;
+        const availableArea = parseFloat(document.getElementById('input-area').value);
+        const tariffPerUnit = parseFloat(document.getElementById('input-tariff').value);
+        
+        document.getElementById('area-display').innerText = availableArea.toLocaleString('en-IN') + " Sq. Ft.";
+
+        const dcOverloadingRatio = 1.30; 
+        const targetDC_kWp = targetAC_kW * dcOverloadingRatio;
+
+        const systemPerformanceRatio = 0.785;
+        const effectivePR = systemPerformanceRatio * (1 - calculatedTempLoss);
+        
+        const annualGeneration_kWh = targetDC_kWp * calculatedGHI * 365 * effectivePR;
+        const calculatedCUF = (annualGeneration_kWh / (targetAC_kW * 24 * 365)) * 100;
+
+        let costPerkW_AC = 48000; 
+        if (targetAC_kW >= 1000) costPerkW_AC = 44500;   
+        if (targetAC_kW >= 5000) costPerkW_AC = 41000;   
+        if (targetAC_kW >= 10000) costPerkW_AC = 39000;  
+
+        const systemCostINR = targetAC_kW * costPerkW_AC;
+        const annualSavingsINR = annualGeneration_kWh * tariffPerUnit;
+        
+        const netAnnualSavingsINR = annualSavingsINR - (systemCostINR * 0.015);
+        const paybackHorizonYears = systemCostINR / netAnnualSavingsINR;
+        
+        let compoundedSavings = 0;
+        let currentYearSavings = annualSavingsINR;
+        for (let year = 1; year <= 25; year++) {
+            compoundedSavings += currentYearSavings - (systemCostINR * 0.018); 
+            currentYearSavings = currentYearSavings * (1 - 0.006); 
+        }
+        const lifecycleNetSavings = compoundedSavings - systemCostINR;
+
+        const minimumRequiredArea = targetAC_kW * 55;
+        const areaStatusPanel = document.getElementById('out-footprint-status');
+        const alertTag = document.getElementById('system-alert-tag');
+
+        if (availableArea < minimumRequiredArea) {
+            areaStatusPanel.innerHTML = `<span class="text-rose-400 font-bold">⚠️ Insufficient Area Variance:</span> Technical setup requires at least ${Math.round(minimumRequiredArea).toLocaleString('en-IN')} Sq.Ft for stable structural deployment blocks.`;
+            alertTag.className = "text-[9px] bg-rose-500/10 text-rose-400 font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-rose-500/20";
+            alertTag.innerText = "Footprint Constraint";
+        } else {
+            areaStatusPanel.innerHTML = `<span class="text-emerald-400 font-bold">✓ Footprint Confirmed:</span> Area threshold checks out. Available layout safely clears institutional safety margin vectors by ${Math.round(availableArea - minimumRequiredArea).toLocaleString('en-IN')} Sq.Ft.`;
+            alertTag.className = "text-[9px] bg-emerald-500/10 text-emerald-400 font-bold uppercase tracking-wider px-2 py-0.5 rounded border border-emerald-500/20";
+            alertTag.innerText = "Feasible Matrix Match";
+        }
+
+        document.getElementById('out-dc-size').innerText = targetDC_kWp.toLocaleString('en-IN', {maximumFractionDigits: 0}) + " kWp";
+        document.getElementById('out-generation').innerText = Math.round(annualGeneration_kWh).toLocaleString('en-IN') + " kWh";
+        document.getElementById('out-cuf').innerText = `Calculated Capacity Utilization Factor: ${calculatedCUF.toFixed(2)}% (Real-Yield Model)`;
+        
+        if (systemCostINR >= 10000000) {
+            document.getElementById('out-cost').innerText = "₹ " + (systemCostINR / 10000000).toFixed(2) + " Crores";
+        } else {
+            document.getElementById('out-cost').innerText = "₹ " + (systemCostINR / 100000).toFixed(2) + " Lakhs";
+        }
+
+        document.getElementById('out-payback').innerText = paybackHorizonYears.toFixed(1) + " Years";
+        
+        if (lifecycleNetSavings >= 10000000) {
+            document.getElementById('out-savings').innerText = "₹ " + (lifecycleNetSavings / 10000000).toFixed(2) + " Crores";
+        } else {
+            document.getElementById('out-savings').innerText = "₹ " + (lifecycleNetSavings / 100000).toFixed(2) + " Lakhs";
+        }
+    }
+
+    function exportCalculationsToForm() {
+        const currentCapacity = document.getElementById('input-capacity-num').value;
+        const currentPin = document.getElementById('input-pincode').value;
+
+        document.getElementById('form-capacity').value = currentCapacity;
+        document.getElementById('form-location').value = `${currentPin} - ${interpretedLocationString}`;
+        
+        // Target dynamic anchor target smoothly down to the visual form focus framework
+        document.getElementById('contact').scrollIntoView({ behavior: 'smooth' });
+    }
+</script>
+
+{% endblock %} 

@@ -1,0 +1,35 @@
+{% extends 'solar_web/base.html' %}
+{% block content %}
+<section class="py-20 px-4 sm:px-6 bg-slate-950">
+    <div class="max-w-7xl mx-auto space-y-12">
+        <div class="space-y-2 text-center md:text-left">
+            <span class="text-amber-400 font-mono text-xs uppercase font-bold tracking-widest">// Field Verified Assets</span>
+            <h1 class="text-3xl sm:text-5xl font-black text-white tracking-tight">Active Generation Deployments</h1>
+        </div>
+
+        <div class="grid grid-cols-1 sm:grid-cols-2 lg:grid-cols-3 gap-8">
+            {% for project in mw_projects %}
+            <div class="bg-slate-900/40 rounded-2xl border border-slate-800/80 overflow-hidden hover:border-amber-500/30 transition-all flex flex-col justify-between">
+                <div class="p-6 space-y-4">
+                    <div class="flex justify-between items-start">
+                        <span class="px-2.5 py-1 bg-slate-950 text-amber-400 font-mono text-[9px] font-bold uppercase tracking-wider rounded border border-slate-800">
+                            {{ project.get_category_display }}
+                        </span>
+                        <span class="text-[10px] text-emerald-400 font-mono font-bold uppercase bg-emerald-500/5 px-2 py-0.5 rounded">Live Active Sync</span>
+                    </div>
+                    <div class="space-y-1">
+                        <h3 class="text-xl font-bold text-white tracking-tight">{{ project.title }}</h3>
+                        <p class="text-xs text-slate-400 font-mono">{{ project.location }} // Operational Rating: {{ project.capacity_kw }} kWp</p>
+                    </div>
+                    <p class="text-slate-400 text-xs leading-relaxed font-sans font-light">{{ project.description }}</p>
+                </div>
+                <div class="p-6 pt-0 border-t border-slate-800/50 mt-4 bg-slate-950/20 font-mono text-[10px] text-slate-500 flex justify-between">
+                    <span>Performance index: 99.2%</span>
+                    <span class="text-amber-400">View Analytics Data</span>
+                </div>
+            </div>
+            {% endfor %}
+        </div>
+    </div>
+</section>
+{% endblock %}
