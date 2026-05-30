@@ -14,6 +14,7 @@ def home_view(request):
     context = {
         'mw_projects': mw_projects,
         'all_projects': all_projects,
+        
     }
     return render(request, 'solar_web/home.html', context)
 
