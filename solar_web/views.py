@@ -14,6 +14,7 @@ def home_view(request):
     context = {
         'mw_projects': mw_projects,
         'all_projects': all_projects,
+        
     }
     return render(request, 'solar_web/home.html', context)
 
@@ -29,8 +30,8 @@ def submit_lead_view(request):
         location = request.POST.get('location')
         monthly_bill = request.POST.get('monthly_bill')
         project_scale = request.POST.get('project_scale')
-        financial_assistance = request.POST.get('financial_assistance')
-        
+        financial_assistance = request.POST.get('financial_assistance') or None
+        print(name, phone, email, location, monthly_bill, project_scale, financial_assistance)
         if not name or not phone or not location:
             messages.error(request, "Error: Please provide all required site audit parameters.")
             return redirect('home')
@@ -40,6 +41,7 @@ def submit_lead_view(request):
             monthly_bill=monthly_bill, project_scale=project_scale,
             financial_assistance=financial_assistance
         )
+        print("Lead submitted successfully!")
         
         messages.success(request, "Success! The SIP INFRA engineering team has received your audit parameters.")
         return redirect('home')
@@ -71,7 +73,17 @@ def projects_portfolio_view(request):
         'mw_projects': [
             {'title': '1.2 MW Rooftop Array', 'location': 'Erode', 'capacity_kw': 1200, 'description': 'Engineered to offset structural utility loads while safely handling intense local building machinery vibrations.', 'get_category_display': 'Industrial MW Scale'},
             {'title': '600 kW High-Yield Array', 'location': 'Madurai', 'capacity_kw': 600, 'description': 'Configured to buffer daytime cooling surges, protecting industrial compressors against high-demand grid penalties.', 'get_category_display': 'Commercial Setup'},
+            {'title': '15 kW Hybrid Configuration', 'location': 'Chennai', 'capacity_kw': 15, 'description': 'Integrated alongside high-cycle lithium backup banks to provide complete self-sufficiency during coastal monsoon seasons.', 'get_category_display': 'Residential Rooftop'},
+            {'title': '1.2 MW Rooftop Array', 'location': 'Erode', 'capacity_kw': 1200, 'description': 'Engineered to offset structural utility loads while safely handling intense local building machinery vibrations.', 'get_category_display': 'Industrial MW Scale'},
+            {'title': '600 kW High-Yield Array', 'location': 'Madurai', 'capacity_kw': 600, 'description': 'Configured to buffer daytime cooling surges, protecting industrial compressors against high-demand grid penalties.', 'get_category_display': 'Commercial Setup'},
+            {'title': '15 kW Hybrid Configuration', 'location': 'Chennai', 'capacity_kw': 15, 'description': 'Integrated alongside high-cycle lithium backup banks to provide complete self-sufficiency during coastal monsoon seasons.', 'get_category_display': 'Residential Rooftop'},
+            {'title': '1.2 MW Rooftop Array', 'location': 'Erode', 'capacity_kw': 1200, 'description': 'Engineered to offset structural utility loads while safely handling intense local building machinery vibrations.', 'get_category_display': 'Industrial MW Scale'},
+            {'title': '600 kW High-Yield Array', 'location': 'Madurai', 'capacity_kw': 600, 'description': 'Configured to buffer daytime cooling surges, protecting industrial compressors against high-demand grid penalties.', 'get_category_display': 'Commercial Setup'},
+            {'title': '15 kW Hybrid Configuration', 'location': 'Chennai', 'capacity_kw': 15, 'description': 'Integrated alongside high-cycle lithium backup banks to provide complete self-sufficiency during coastal monsoon seasons.', 'get_category_display': 'Residential Rooftop'},
+            {'title': '1.2 MW Rooftop Array', 'location': 'Erode', 'capacity_kw': 1200, 'description': 'Engineered to offset structural utility loads while safely handling intense local building machinery vibrations.', 'get_category_display': 'Industrial MW Scale'},
+            {'title': '600 kW High-Yield Array', 'location': 'Madurai', 'capacity_kw': 600, 'description': 'Configured to buffer daytime cooling surges, protecting industrial compressors against high-demand grid penalties.', 'get_category_display': 'Commercial Setup'},
             {'title': '15 kW Hybrid Configuration', 'location': 'Chennai', 'capacity_kw': 15, 'description': 'Integrated alongside high-cycle lithium backup banks to provide complete self-sufficiency during coastal monsoon seasons.', 'get_category_display': 'Residential Rooftop'}
+        
         ]
     }
     return render(request, 'solar_web/projects_portfolio.html', context)
