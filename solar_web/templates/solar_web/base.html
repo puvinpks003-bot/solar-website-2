@@ -102,8 +102,24 @@
         <!-- Interactive Navigation Base Panel with Premium Sharp Styling -->
         <div class="max-w-7xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.04)] border border-slate-200/50 backdrop-blur-md transition-all duration-300 snake-track-card">
             
-            <!-- Dynamic Brand Title Component -->
-            <a href="{% url 'home' %}" class="group flex items-center gap-2 outline-none shrink-0 px-2.5 py-1.5 rounded-md border border-transparent hover:border-slate-200 hover:bg-slate-50/80 transition-all duration-300 relative z-10">
+            <!-- Dynamic Brand Title Component with 3D Isometric Solar Panel Grid Logo -->
+            <a href="{% url 'home' %}" class="group flex items-center gap-3 outline-none shrink-0 px-2.5 py-1.5 rounded-md border border-transparent hover:border-slate-200 hover:bg-slate-50/80 transition-all duration-300 relative z-10">
+                <!-- Isometric Solar Array Grid Vector -->
+                <svg class="w-7 h-7 text-slate-800 group-hover:text-amber-500 transition-all duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                    <!-- Outer Metallic Structural Frame -->
+                    <path d="M2 9L12 3L22 9L12 15L2 9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M2 15L12 21L22 15" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                    <path d="M2 9V15M22 9V15M12 15V21" stroke="currentColor" stroke-width="1.5"/>
+                    
+                    <!-- Internal Photovoltaic Silicon Subcells -->
+                    <path d="M12 5L4.5 9.5L12 14L19.5 9.5L12 5Z" fill="currentColor" class="text-slate-900 group-hover:text-amber-500/90 transition-colors duration-300"/>
+                    
+                    <!-- High-Fidelity Infrastructure Grid Intersections -->
+                    <path d="M12 5V14" stroke="white" stroke-width="0.75" opacity="0.4"/>
+                    <path d="M4.5 9.5H19.5" stroke="white" stroke-width="0.75" opacity="0.4"/>
+                    <path d="M8.25 7.25L15.75 11.75" stroke="white" stroke-width="0.75" opacity="0.3"/>
+                    <path d="M15.75 7.25L8.25 11.75" stroke="white" stroke-width="0.75" opacity="0.3"/>
+                </svg>
                 <div class="text-xl font-black text-slate-900 tracking-tight group-hover:scale-[1.01] transition-transform duration-300">
                     SIP <span class="text-amber-500 group-hover:text-amber-600 transition-colors duration-300">INFRA</span>
                 </div>
@@ -193,10 +209,18 @@
             <!-- Main Information Grid Map -->
             <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-8 lg:gap-12 pb-12">
                 
-                <!-- Corporate Pillar Info Block -->
+                <!-- Corporate Pillar Info Block with Matching Panel Grid Logo -->
                 <div class="lg:col-span-4 space-y-4">
-                    <div class="text-xl font-black text-white tracking-tight">
-                        SIP <span class="text-amber-500">INFRA</span>
+                    <div class="flex items-center gap-3 text-xl font-black text-white tracking-tight">
+                        <svg class="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                            <path d="M2 9L12 3L22 9L12 15L2 9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M2 15L12 21L22 15" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
+                            <path d="M2 9V15M22 9V15M12 15V21" stroke="currentColor" stroke-width="1.5"/>
+                            <path d="M12 5L4.5 9.5L12 14L19.5 9.5L12 5Z" fill="currentColor" class="text-amber-500"/>
+                            <path d="M12 5V14" stroke="black" stroke-width="0.75" opacity="0.3"/>
+                            <path d="M4.5 9.5H19.5" stroke="black" stroke-width="0.75" opacity="0.3"/>
+                        </svg>
+                        <span>SIP <span class="text-amber-500">INFRA</span></span>
                     </div>
                     <p class="text-xs text-slate-400 font-light leading-relaxed max-w-sm">
                         Designing high-yield captive solar assets and institutional power distribution networks securely across South India[cite: 1].
