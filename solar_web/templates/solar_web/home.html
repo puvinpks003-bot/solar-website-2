@@ -16,47 +16,84 @@
         z-index: 0; pointer-events: none;
     }
 
+    /* Premium Advanced Glassmorphism */
     .glass-panel {
-        background: rgba(15, 23, 42, 0.55);
+        background: linear-gradient(135deg, rgba(15, 23, 42, 0.45) 0%, rgba(30, 41, 59, 0.3) 100%);
         backdrop-filter: blur(16px);
         -webkit-backdrop-filter: blur(16px);
-        border: 1px solid rgba(255, 255, 255, 0.05);
+        border: 1px solid rgba(255, 255, 255, 0.06);
+        box-shadow: 0 20px 50px rgba(0, 0, 0, 0.3), inset 0 1px 1px rgba(255, 255, 255, 0.05);
     }
 
-    /* Premium Custom Range Slider Customization */
-    input[type="range"]::-webkit-slider-thumb {
+    /* Custom Advanced Range Slider Overhaul */
+    input[type="range"].premium-slider {
+        -webkit-appearance: none;
+        appearance: none;
+        width: 100%;
+        height: 6px;
+        background: rgba(30, 41, 59, 0.8);
+        border-radius: 9999px;
+        outline: none;
+        border: 1px solid rgba(255, 255, 255, 0.05);
+    }
+    input[type="range"].premium-slider::-webkit-slider-thumb {
         -webkit-appearance: none;
         appearance: none;
         width: 18px;
         height: 18px;
         border-radius: 50%;
-        background: #f59e0b;
+        background: radial-gradient(circle at 35% 35%, #fbbf24 0%, #f59e0b 100%);
         cursor: pointer;
-        box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
-        transition: transform 0.15s ease-in-out;
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.65), 0 2px 4px rgba(0,0,0,0.5);
+        transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
+        border: 2px solid rgba(255, 255, 255, 0.1);
     }
-    input[type="range"]::-webkit-slider-thumb:hover {
-        transform: scale(1.2);
+    input[type="range"].premium-slider::-webkit-slider-thumb:hover {
+        transform: scale(1.25);
     }
-    input[type="range"]::-moz-range-thumb {
-        width: 18px;
-        height: 18px;
-        border: 0;
+    input[type="range"].premium-slider::-moz-range-thumb {
+        width: 14px;
+        height: 14px;
+        border: 2px solid rgba(255, 255, 255, 0.1);
         border-radius: 50%;
-        background: #f59e0b;
+        background: radial-gradient(circle at 35% 35%, #fbbf24 0%, #f59e0b 100%);
         cursor: pointer;
-        box-shadow: 0 0 12px rgba(245, 158, 11, 0.6);
-        transition: transform 0.15s ease-in-out;
+        box-shadow: 0 0 14px rgba(245, 158, 11, 0.65), 0 2px 4px rgba(0,0,0,0.5);
+        transition: transform 0.15s cubic-bezier(0.34, 1.56, 0.64, 1);
     }
-    input[type="range"]::-moz-range-thumb:hover {
-        transform: scale(1.2);
+    input[type="range"].premium-slider::-moz-range-thumb:hover {
+        transform: scale(1.25);
+    }
+
+    /* Native Interactive Label Transformations */
+    .floating-label-group {
+        position: relative;
+    }
+    .floating-label-group input, .floating-label-group select {
+        padding-top: 1.5rem;
+        padding-bottom: 0.5rem;
+    }
+    .floating-label-group label {
+        position: absolute;
+        top: 1rem;
+        left: 0.875rem;
+        pointer-events: none;
+        transition: all 0.2s cubic-bezier(0.4, 0, 0.2, 1);
+        transform-origin: left top;
+    }
+    .floating-label-group input:focus ~ label,
+    .floating-label-group input:not(:placeholder-shown) ~ label,
+    .floating-label-group select:focus ~ label,
+    .floating-label-group select:valid ~ label {
+        transform: translateY(-0.65rem) scale(0.8);
+        color: #f59e0b;
     }
 </style>
 
 <div id="solar-preloader" class="fixed inset-0 bg-slate-950 z-50 flex flex-col items-center justify-center p-4 transition-all duration-700 ease-out">
     <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#334155_1px,transparent_1px)] [background-size:16px_16px]"></div>
     <div class="w-full max-w-sm glass-panel rounded-2xl border border-slate-800/80 p-6 space-y-6 relative overflow-hidden">
-        <div class="flex justify-between items-center border-b border-slate-800 pb-3">
+        <div class="flex justify-between items-center border-b border-slate-800/60 pb-3">
             <div class="flex items-center gap-2">
                 <span class="w-2 h-2 rounded-full bg-emerald-500 animate-ping"></span>
                 <span class="text-[9px] font-mono text-slate-400 font-bold uppercase tracking-wider">System: Connected</span>
@@ -64,11 +101,11 @@
             <span class="text-[9px] font-mono text-slate-500 font-bold">SYS_REF: #TN-2026</span>
         </div>
         <div class="grid grid-cols-2 gap-4">
-            <div class="bg-slate-950/80 border border-slate-900 rounded-xl p-3 space-y-0.5">
+            <div class="bg-slate-950/80 border border-slate-900/60 rounded-xl p-3 space-y-0.5">
                 <span class="text-[8px] font-mono text-slate-500 font-bold block uppercase tracking-tight">Irradiance Profile</span>
                 <div id="telemetry-irr" class="text-sm font-mono font-black text-slate-300">0 W/m²</div>
             </div>
-            <div class="bg-slate-950/80 border border-slate-900 rounded-xl p-3 space-y-0.5">
+            <div class="bg-slate-950/80 border border-slate-900/60 rounded-xl p-3 space-y-0.5">
                 <span class="text-[8px] font-mono text-slate-500 font-bold block uppercase tracking-tight">String Generation</span>
                 <div id="telemetry-gen" class="text-sm font-mono font-black text-amber-500">0.00 kW</div>
             </div>
@@ -114,7 +151,7 @@
                 </p>
                 
                 <div class="flex flex-col sm:flex-row gap-4 justify-center lg:justify-start items-center pt-4 max-w-xs sm:max-w-none mx-auto lg:mx-0 w-full">
-                    <a href="#calculator" class="w-full sm:w-auto text-center px-8 py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 text-slate-950 font-black rounded-xl shadow-[0_4px_25px_rgba(245,158,11,0.3)] hover:shadow-[0_4px_40px_rgba(245,158,11,0.5)] transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] text-xs tracking-wider uppercase cursor-pointer">
+                    <a href="#solar_calculator" class="w-full sm:w-auto text-center px-8 py-4 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 text-slate-950 font-black rounded-xl shadow-[0_4px_25px_rgba(245,158,11,0.3)] hover:shadow-[0_4px_40px_rgba(245,158,11,0.5)] transition-all duration-300 transform hover:-translate-y-1 hover:scale-[1.02] text-xs tracking-wider uppercase cursor-pointer">
                         Run Energy ROI Calculator
                     </a>
                     <a href="#contact" class="w-full sm:w-auto text-center px-8 py-4 bg-slate-900/60 text-white font-bold rounded-xl border border-slate-800 hover:border-amber-500/40 backdrop-blur-md transition-all duration-300 text-xs tracking-wider uppercase transform hover:-translate-y-1 hover:bg-slate-800">
@@ -151,7 +188,7 @@
     <div class="max-w-7xl mx-auto px-4 sm:px-6 relative z-20 -mt-12 mb-24 premium-reveal">
         <div class="grid grid-cols-2 lg:grid-cols-5 gap-4 max-w-6xl mx-auto">
             <div class="glass-panel p-5 rounded-xl text-center border border-slate-800/80 group hover:border-amber-500/30 transition-all duration-500 shadow-xl col-span-2 lg:col-span-1 bg-gradient-to-b from-slate-900/40 to-transparent flex flex-col justify-center items-center">
-                <div class="text-xl font-black text-slate-200 tracking-tight"><span class="text-amber-400">ani</span> Solar</div>
+                <div class="text-xl font-black text-slate-200 tracking-tight"><span class="text-amber-400">adani</span> Solar</div>
                 <div class="text-[9px] text-amber-400/90 font-mono font-bold tracking-wider uppercase mt-1">Tier-1 Module Tie-up</div>
             </div>
             <div class="glass-panel p-6 rounded-xl text-center border border-slate-800/80 group hover:border-amber-500/30 transition-all duration-500 shadow-xl">
@@ -174,7 +211,7 @@
     </div>
 
     <section class="max-w-7xl mx-auto py-4 px-4 sm:px-6 mb-16 premium-reveal">
-        <div class="glass-panel rounded-2xl border border-slate-800/80 bg-gradient-to-r from-slate-950 via-slate-900/20 to-slate-950 p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center gap-8">
+        <div class="glass-panel rounded-2xl border border-slate-800/80 p-6 md:p-10 shadow-2xl relative overflow-hidden flex flex-col lg:flex-row items-center gap-8">
             <div class="absolute inset-0 opacity-5 bg-[radial-gradient(#f59e0b_1px,transparent_1px)] [background-size:20px_20px]"></div>
             
             <div class="shrink-0 flex flex-col items-center lg:items-start text-center lg:text-left space-y-2 lg:border-r lg:border-slate-800/80 lg:pr-10 w-full lg:w-auto">
@@ -203,7 +240,7 @@
         </div>
     </section>
 
-    <section  class="max-w-7xl mx-auto py-24 px-4 sm:px-6 premium-reveal aurora-bg scroll-mt-24">
+    <section class="max-w-7xl mx-auto py-24 px-4 sm:px-6 premium-reveal aurora-bg scroll-mt-24">
         <div id="solar_calculator" class="text-center max-w-3xl mx-auto mb-16">
             <span class="text-amber-500 font-mono font-bold uppercase tracking-widest text-[10px] block">// Asset Assessment Desk</span>
             <h2 class="text-3xl sm:text-4xl font-black tracking-tight text-white mt-1">Solar Sizing & Savings Calculator</h2>
@@ -212,39 +249,41 @@
 
         <div class="grid grid-cols-1 lg:grid-cols-12 gap-8 items-stretch max-w-6xl mx-auto">
             
-            <div class="lg:col-span-5 glass-panel rounded-2xl p-6 sm:p-8 flex flex-col justify-between border border-slate-800/80 bg-slate-900/40 relative overflow-hidden">
+            <div class="lg:col-span-5 glass-panel rounded-2xl p-6 sm:p-8 flex flex-col justify-between border border-slate-800/80 relative overflow-hidden">
                 <div class="absolute top-0 right-0 p-3 text-[9px] font-mono text-slate-600 font-bold uppercase tracking-tighter select-none pointer-events-none">Console_v2.6</div>
                 
                 <div class="space-y-6">
-                    <div class="border-b border-slate-800/80 pb-4">
+                    <div class="border-b border-slate-800/60 pb-4">
                         <h3 class="text-base font-black font-mono text-white tracking-wide uppercase flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-amber-500 shadow-[0_0_8px_rgba(245,158,11,0.6)]"></span> Solar Calculator
                         </h3>
                     </div>
                     
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Monthly Electricity Bill (₹)</label>
+                    <div class="space-y-1.5 floating-label-group">
                         <div class="relative rounded-xl overflow-hidden shadow-inner border border-slate-800 focus-within:border-amber-500/60 transition-colors bg-slate-950/80">
-                            <span class="absolute left-4 top-1/2 -translate-y-1/2 font-mono text-sm text-slate-500 font-bold">₹</span>
-                            <input type="number" id="calc-bill" placeholder="Enter bill layout value" class="w-full pl-8 pr-4 py-3.5 bg-transparent outline-none text-sm font-mono font-bold text-white transition-colors placeholder:text-slate-700">
+                            <span class="absolute left-4 bottom-2 font-mono text-sm text-slate-500 font-bold">₹</span>
+                            <input type="number" id="calc-bill" placeholder=" " class="w-full pl-8 pr-4 bg-transparent outline-none text-sm font-mono font-bold text-white transition-colors placeholder:text-slate-700">
+                            <label class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Monthly Electricity Bill (₹)</label>
                         </div>
                     </div>
 
-                    <div class="space-y-2.5 bg-slate-950/40 border border-slate-900 rounded-xl p-4">
-                        <div class="flex justify-between items-center">
-                            <label class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">Tariff Rate (₹/unit): <span id="tariff-val" class="text-amber-400">8</span></label>
+                    <div class="space-y-2.5 bg-slate-950/40 border border-slate-900 rounded-xl p-4 relative">
+                        <div class="flex justify-between items-center mb-1">
+                            <label class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider">Tariff Rate (₹/unit): <span id="tariff-val" class="text-amber-400 font-black">8</span></label>
                         </div>
-                        <input type="range" id="calc-tariff" min="1" max="15" step="0.5" value="8" oninput="updateTariffLabel(this.value)" class="w-full accent-amber-500 h-1 bg-slate-800 rounded-lg cursor-pointer">
+                        <div class="relative w-full flex items-center">
+                            <input type="range" id="calc-tariff" min="1" max="15" step="0.5" value="8" oninput="updateTariffLabel(this.value)" class="premium-slider w-full accent-amber-500 h-1 bg-slate-800 rounded-lg cursor-pointer">
+                        </div>
                     </div>
 
-                    <div class="space-y-2">
-                        <label class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Connection Type</label>
+                    <div class="space-y-1.5 floating-label-group">
                         <div class="relative bg-slate-950/80 border border-slate-800 rounded-xl overflow-hidden focus-within:border-amber-500/60 transition-colors">
-                            <select id="calc-connection" class="w-full p-3.5 bg-transparent outline-none text-xs font-mono font-bold text-slate-300 cursor-pointer appearance-none">
+                            <select id="calc-connection" required class="w-full px-3.5 bg-transparent outline-none text-xs font-mono font-bold text-slate-300 cursor-pointer appearance-none">
                                 <option value="single" class="bg-slate-950 text-slate-300">Single Phase</option>
                                 <option value="three" class="bg-slate-950 text-slate-300" selected>Three Phase</option>
                             </select>
-                            <div class="absolute right-4 top-1/2 -translate-y-1/2 pointer-events-none text-slate-500 text-[10px]">&nbsp;▼</div>
+                            <label class="text-[10px] font-mono font-bold text-slate-400 uppercase tracking-wider block">Connection Type</label>
+                            <div class="absolute right-4 bottom-3.5 pointer-events-none text-slate-500 text-[10px]">&nbsp;▼</div>
                         </div>
                     </div>
 
@@ -254,46 +293,71 @@
                 </div>
             </div>
 
-            <div class="lg:col-span-7 flex flex-col justify-between space-y-4 glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800/80 bg-slate-900/20 backdrop-blur-md">
+            <div class="lg:col-span-7 flex flex-col justify-between space-y-4 glass-panel rounded-2xl p-6 sm:p-8 border border-slate-800/80">
                 <div class="space-y-1">
-                    <div class="border-b border-slate-800/80 pb-4 mb-4">
+                    <div class="border-b border-slate-800/60 pb-4 mb-4">
                         <h3 class="text-base font-black font-mono text-white tracking-wide uppercase flex items-center gap-2">
                             <span class="w-1.5 h-1.5 rounded-full bg-emerald-500 shadow-[0_0_8px_rgba(16,185,129,0.6)]"></span> Estimated Output
                         </h3>
                     </div>
 
-                    <div class="flex justify-between items-center py-3.5 border-b border-slate-900/60">
-                        <span class="text-xs font-medium text-slate-300">Recommended System Size</span>
-                        <span id="out-sys-size" class="text-sm font-mono font-black text-emerald-400">-</span>
-                    </div>
+                    <div class="grid grid-cols-1 md:grid-cols-12 gap-6 items-center">
+                        <div class="md:col-span-7 space-y-0.5">
+                            <div class="flex justify-between items-center py-3.5 border-b border-slate-900/40">
+                                <span class="text-xs font-medium text-slate-300">Recommended System Size</span>
+                                <span id="out-sys-size" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            </div>
 
-                    <div class="flex justify-between items-center py-3.5 border-b border-slate-900/60">
-                        <span class="text-xs font-medium text-slate-300">Monthly Consumption</span>
-                        <span id="out-consumption" class="text-sm font-mono font-black text-emerald-400">-</span>
-                    </div>
+                            <div class="flex justify-between items-center py-3.5 border-b border-slate-900/40">
+                                <span class="text-xs font-medium text-slate-300">Monthly Consumption</span>
+                                <span id="out-consumption" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            </div>
 
-                    <div class="flex justify-between items-center py-3.5 border-b border-slate-900/60">
-                        <span class="text-xs font-medium text-slate-300">Panels Required</span>
-                        <span id="out-panels" class="text-sm font-mono font-black text-emerald-400">-</span>
-                    </div>
+                            <div class="flex justify-between items-center py-3.5 border-b border-slate-900/40">
+                                <span class="text-xs font-medium text-slate-300">Panels Required</span>
+                                <span id="out-panels" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            </div>
 
-                    <div class="flex justify-between items-center py-3.5 border-b border-slate-900/60">
-                        <span class="text-xs font-medium text-slate-300">Estimated System Cost</span>
-                        <span id="out-system-cost" class="text-sm font-mono font-black text-emerald-400">-</span>
-                    </div>
+                            <div class="flex justify-between items-center py-3.5 border-b border-slate-900/40">
+                                <span class="text-xs font-medium text-slate-300">Estimated System Cost</span>
+                                <span id="out-system-cost" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            </div>
 
-                    <div class="flex justify-between items-center py-3.5 border-b border-slate-900/60">
-                        <span class="text-xs font-medium text-slate-300">Monthly Savings</span>
-                        <span id="out-monthly-savings" class="text-sm font-mono font-black text-emerald-400">-</span>
-                    </div>
+                            <div class="flex justify-between items-center py-3.5 border-b border-slate-900/40">
+                                <span class="text-xs font-medium text-slate-300">Monthly Savings</span>
+                                <span id="out-monthly-savings" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            </div>
 
-                    <div class="flex justify-between items-center py-3.5">
-                        <span class="text-xs font-medium text-slate-300">Annual Savings</span>
-                        <span id="out-annual-savings" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            <div class="flex justify-between items-center py-3.5">
+                                <span class="text-xs font-medium text-slate-300">Annual Savings</span>
+                                <span id="out-annual-savings" class="text-sm font-mono font-black text-emerald-400">-</span>
+                            </div>
+                        </div>
+
+                        <div class="md:col-span-5 flex flex-col items-center justify-center p-4 bg-slate-950/40 border border-slate-900 rounded-xl h-full min-h-[220px]">
+                            <span class="text-[8px] font-mono text-slate-500 font-bold uppercase tracking-widest mb-3">// Yield Vector Matrix</span>
+                            <div class="relative w-full aspect-square max-w-[140px]">
+                                <svg viewBox="0 0 36 36" class="w-full h-full transform -rotate-90">
+                                    <path class="text-slate-900" stroke-width="2.5" stroke="currentColor" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <path id="vector-chart-track" class="text-gradient transition-all duration-1000 ease-out" stroke-dasharray="0, 100" stroke-width="2.8" stroke-linecap="round" stroke="url(#amberGradient)" fill="none" d="M18 2.0845 a 15.9155 15.9155 0 0 1 0 31.831 a 15.9155 15.9155 0 0 1 0 -31.831" />
+                                    <defs>
+                                        <linearGradient id="amberGradient" x1="0%" y1="0%" x2="100%" y2="100%">
+                                            <stop offset="0%" stop-color="#f59e0b" />
+                                            <stop offset="100%" stop-color="#10b981" />
+                                        </linearGradient>
+                                    </defs>
+                                </svg>
+                                <div class="absolute inset-0 flex flex-col items-center justify-center text-center">
+                                    <span class="text-[8px] font-mono text-slate-500 uppercase tracking-tighter">ROI Peak</span>
+                                    <span id="vector-chart-percentage" class="text-base font-mono font-black text-white">0%</span>
+                                </div>
+                            </div>
+                            <span class="text-[9px] font-mono text-slate-400 mt-3 font-semibold text-center border border-slate-800/80 px-2 py-0.5 rounded bg-slate-950/60">Optimized Performance Vector</span>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="glass-panel rounded-xl p-3 bg-slate-950/60 mt-4 border border-slate-800/80">
+                <div class="glass-panel rounded-xl p-3 bg-slate-950/60 mt-4 border border-slate-800/60">
                     <p class="text-[10px] font-mono text-slate-500 leading-relaxed text-center">
                         * Estimates calculated based on an average generation profile vector of 4 functional energy units per kW per day utilizing premium high-efficiency 550Wp modules.
                     </p>
@@ -514,42 +578,75 @@
                 </div>
             {% endif %}
             
-            <form action="{% url 'submit_lead_view' %}" name="submit_lead_view" method="POST" class="space-y-4">
+            <form action="{% url 'submit_lead_view' %}" name="submit_lead_view" method="POST" class="space-y-5">
                 {% csrf_token %}
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Name *</label><input type="text" name="name" placeholder="Name" required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-white transition-colors"></div>
-                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">WhatsApp No. *</label><input type="text" name="phone" placeholder="Authorized Representative No." required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-white transition-colors"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1.5 floating-label-group">
+                        <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                            <input type="text" name="name" placeholder=" " required class="px-3.5 bg-transparent w-full outline-none text-xs text-white">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Name *</label>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5 floating-label-group">
+                        <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                            <input type="text" name="phone" placeholder=" " required class="px-3.5 bg-transparent w-full outline-none text-xs text-white">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">WhatsApp No. *</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Email *</label><input type="email" name="email" placeholder="Arun@gmail.com" required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-white transition-colors"></div>
-                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Plant Coordinates *</label><input type="text" id="form-location" name="location" placeholder="Site Location / Mapped District" required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-white transition-colors"></div>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1.5 floating-label-group">
+                        <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                            <input type="email" name="email" placeholder=" " required class="px-3.5 bg-transparent w-full outline-none text-xs text-white">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Email *</label>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5 floating-label-group">
+                        <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                            <input type="text" id="form-location" name="location" placeholder=" " required class="px-3.5 bg-transparent w-full outline-none text-xs text-white">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Plant Coordinates *</label>
+                        </div>
+                    </div>
                 </div>
-                <div class="grid grid-cols-1 md:grid-cols-2 gap-4">
-                    <div class="space-y-1.5"><label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Mapped AC Scale (kW) *</label><input type="number" id="form-capacity" name="allocated_capacity" required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-white transition-colors"></div>
-                    <div class="space-y-1.5">
-                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Target Array Scale *</label>
-                        <select id="form-scale" name="project_scale" required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-slate-400 transition-colors">
-                            <option value="" disabled selected hidden>Select Scale...</option>
-                            <option value="MW">Industrial Megawatt Plant (&gt;100 kW)</option>
-                            <option value="COM">Commercial Complex (10 kW - 100 kW)</option>
-                            <option value="RES">Residential Layout (&lt;10 kW)</option>
-                        </select>
+                <div class="grid grid-cols-1 md:grid-cols-2 gap-5">
+                    <div class="space-y-1.5 floating-label-group">
+                        <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                            <input type="number" id="form-capacity" name="allocated_capacity" placeholder=" " required class="px-3.5 bg-transparent w-full outline-none text-xs text-white">
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Mapped AC Scale (kW) *</label>
+                        </div>
+                    </div>
+                    <div class="space-y-1.5 floating-label-group">
+                        <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                            <select id="form-scale" name="project_scale" required class="px-3.5 bg-transparent w-full outline-none text-xs text-slate-300 appearance-none">
+                                <option value="" disabled selected hidden></option>
+                                <option value="MW" class="bg-slate-950">Industrial Megawatt Plant (&gt;100 kW)</option>
+                                <option value="COM" class="bg-slate-950">Commercial Complex (10 kW - 100 kW)</option>
+                                <option value="RES" class="bg-slate-950">Residential Layout (&lt;10 kW)</option>
+                            </select>
+                            <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Target Array Scale *</label>
+                            <div class="absolute right-4 bottom-3.5 pointer-events-none text-slate-500 text-[10px]">&nbsp;▼</div>
+                        </div>
                     </div>
                 </div>
                 
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Average Monthly Electricity Bill (₹) *</label>
-                    <input type="number" id="form-bill" name="monthly_bill" placeholder="e.g. 150000" required class="p-3.5 bg-slate-950 border border-slate-800 focus:border-amber-500 rounded-xl w-full outline-none text-xs text-white transition-colors">
+                <div class="space-y-1.5 floating-label-group">
+                    <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                        <input type="number" id="form-bill" name="monthly_bill" placeholder=" " required class="px-3.5 bg-transparent w-full outline-none text-xs text-white">
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Average Monthly Electricity Bill (₹) *</label>
+                    </div>
                 </div>
 
-                <div class="space-y-1.5">
-                    <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Project Capex Mode Preference *</label>
-                    <select name="financial_assistance" required class="p-3.5 bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl w-full outline-none text-xs text-slate-400 w-full transition-colors">
-                        <option value="" disabled selected hidden>Select Asset Capex Strategy...</option>
-                        <option value="NONE">Self-Funded Investment / Corporate CAPEX Allocation</option>
-                        <option value="LOAN">Debt Financed / Term Infrastructure Loans requested</option>
-                        <option value="OPEX">Third Party OPEX / RESCO Model PPA Framework Arrangement</option>
-                    </select>
+                <div class="space-y-1.5 floating-label-group">
+                    <div class="relative bg-slate-950 border border-slate-800 focus-within:border-amber-500 rounded-xl transition-colors">
+                        <select name="financial_assistance" required class="px-3.5 bg-transparent w-full outline-none text-xs text-slate-300 appearance-none">
+                            <option value="" disabled selected hidden></option>
+                            <option value="NONE" class="bg-slate-950">Self-Funded Investment / Corporate CAPEX Allocation</option>
+                            <option value="LOAN" class="bg-slate-950">Debt Financed / Term Infrastructure Loans requested</option>
+                            <option value="OPEX" class="bg-slate-950">Third Party OPEX / RESCO Model PPA Framework Arrangement</option>
+                        </select>
+                        <label class="text-[10px] font-bold text-slate-400 uppercase tracking-wider block">Project Capex Mode Preference *</label>
+                        <div class="absolute right-4 bottom-3.5 pointer-events-none text-slate-500 text-[10px]">&nbsp;▼</div>
+                    </div>
                 </div>
                 <button type="submit" class="w-full bg-gradient-to-r from-amber-500 to-orange-500 text-slate-950 p-4 rounded-xl font-black text-xs shadow-xl hover:brightness-110 transition-all tracking-wider uppercase mt-2 cursor-pointer">Submit Pipeline to Technical Desk</button>
             </form>
@@ -559,11 +656,18 @@
 </div>
 
 <script>
-    // Helper to update slider readout instantly on change
+    // Helper to update slider readout instantly on change and update slide background fills
     function updateTariffLabel(val) {
         const tariffValLabel = document.getElementById('tariff-val');
         if (tariffValLabel) {
             tariffValLabel.innerText = val;
+        }
+        
+        // Multi-color dynamic track range injection matrix
+        const slider = document.getElementById('calc-tariff');
+        if (slider) {
+            const percentage = ((val - slider.min) / (slider.max - slider.min)) * 100;
+            slider.style.background = `linear-gradient(to right, #f59e0b 0%, #d97706 ${percentage}%, rgba(30, 41, 59, 0.8) ${percentage}%, rgba(30, 41, 59, 0.8) 100%)`;
         }
     }
 
@@ -584,6 +688,9 @@
         const formCapacity = document.getElementById('form-capacity');
         const formBill = document.getElementById('form-bill');
         const scaleDropdown = document.getElementById('form-scale');
+        
+        const chartTrack = document.getElementById('vector-chart-track');
+        const chartPercentage = document.getElementById('vector-chart-percentage');
 
         let rawBill = billInput.value.toString().trim().replace(/,/g, '');
         
@@ -598,6 +705,9 @@
             if (formCapacity) formCapacity.value = "";
             if (formBill) formBill.value = "";
             if (scaleDropdown) scaleDropdown.value = "";
+            
+            if (chartTrack) chartTrack.setAttribute('stroke-dasharray', '0, 100');
+            if (chartPercentage) chartPercentage.innerText = "0%";
             return;
         }
 
@@ -641,13 +751,28 @@
         if (mSavingsEl) mSavingsEl.innerText = "₹" + monthlySavings.toLocaleString('en-IN');
         if (aSavingsEl) aSavingsEl.innerText = "₹" + annualSavings.toLocaleString('en-IN');
 
+        // Dynamically recalculate Vector SVG performance readout properties
+        if (chartTrack && chartPercentage) {
+            let activeRoiFactor = Math.min(Math.round((displaySystemSizeKw / 150) * 100), 100);
+            if (activeRoiFactor <= 0) activeRoiFactor = 12; // Base floor alignment visibility 
+            chartTrack.setAttribute('stroke-dasharray', `${activeRoiFactor}, 100`);
+            chartPercentage.innerText = activeRoiFactor + "%";
+        }
+
         // Automate Synced values to the base contact pipeline forms
-        if (formCapacity) formCapacity.value = displaySystemSizeKw;
-        if (formBill) formBill.value = monthlyBill;
+        if (formCapacity) {
+            formCapacity.value = displaySystemSizeKw;
+            formCapacity.dispatchEvent(new Event('input', { bubbles: true }));
+        }
+        if (formBill) {
+            formBill.value = monthlyBill;
+            formBill.dispatchEvent(new Event('input', { bubbles: true }));
+        }
         if (scaleDropdown) {
             if (displaySystemSizeKw >= 100) scaleDropdown.value = "MW";
             else if (displaySystemSizeKw >= 10) scaleDropdown.value = "COM";
             else scaleDropdown.value = "RES";
+            scaleDropdown.dispatchEvent(new Event('change', { bubbles: true }));
         }
     }
 
@@ -660,6 +785,10 @@
         const status = document.getElementById('preloader-status');
         const irrText = document.getElementById('telemetry-irr');
         const genText = document.getElementById('telemetry-gen');
+
+        // Initialize slider background position vectors matching layout default state values
+        const tariffSlider = document.getElementById('calc-tariff');
+        if (tariffSlider) updateTariffLabel(tariffSlider.value);
 
         const states = [
             { t: 0, s: "Booting Telemetry Arrays..." },
