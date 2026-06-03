@@ -4,8 +4,6 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIP INFRA | Megawatt Solar Solutions Tamil Nadu</title>
-    <!-- Alternative Angular Solar Panel & Sun Favicon -->
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3Cpath fill='%23f59e0b' d='M5 13h14l-2 5H7l-2-5z'/%3E%3Cpath d='M12 13v5M8.5 15.5l7 0'/%3E%3C/svg%3E"/>
     <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
     
     <style>
@@ -104,24 +102,8 @@
         <!-- Interactive Navigation Base Panel with Premium Sharp Styling -->
         <div class="max-w-7xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.04)] border border-slate-200/50 backdrop-blur-md transition-all duration-300 snake-track-card">
             
-            <!-- Dynamic Brand Title Component with 3D Isometric Solar Panel Grid Logo -->
-            <a href="{% url 'home' %}" class="group flex items-center gap-3 outline-none shrink-0 px-2.5 py-1.5 rounded-md border border-transparent hover:border-slate-200 hover:bg-slate-50/80 transition-all duration-300 relative z-10">
-                <!-- Isometric Solar Array Grid Vector -->
-                <svg class="w-7 h-7 text-slate-800 group-hover:text-amber-500 transition-all duration-300" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                    <!-- Outer Metallic Structural Frame -->
-                    <path d="M2 9L12 3L22 9L12 15L2 9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                    <path d="M2 15L12 21L22 15" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                    <path d="M2 9V15M22 9V15M12 15V21" stroke="currentColor" stroke-width="1.5"/>
-                    
-                    <!-- Internal Photovoltaic Silicon Subcells -->
-                    <path d="M12 5L4.5 9.5L12 14L19.5 9.5L12 5Z" fill="currentColor" class="text-slate-900 group-hover:text-amber-500/90 transition-colors duration-300"/>
-                    
-                    <!-- High-Fidelity Infrastructure Grid Intersections -->
-                    <path d="M12 5V14" stroke="white" stroke-width="0.75" opacity="0.4"/>
-                    <path d="M4.5 9.5H19.5" stroke="white" stroke-width="0.75" opacity="0.4"/>
-                    <path d="M8.25 7.25L15.75 11.75" stroke="white" stroke-width="0.75" opacity="0.3"/>
-                    <path d="M15.75 7.25L8.25 11.75" stroke="white" stroke-width="0.75" opacity="0.3"/>
-                </svg>
+            <!-- Dynamic Brand Title Component -->
+            <a href="{% url 'home' %}" class="group flex items-center gap-2 outline-none shrink-0 px-2.5 py-1.5 rounded-md border border-transparent hover:border-slate-200 hover:bg-slate-50/80 transition-all duration-300 relative z-10">
                 <div class="text-xl font-black text-slate-900 tracking-tight group-hover:scale-[1.01] transition-transform duration-300">
                     SIP <span class="text-amber-500 group-hover:text-amber-600 transition-colors duration-300">INFRA</span>
                 </div>
@@ -130,6 +112,7 @@
             <!-- Center Navigation Links Segment -->
             <div id="desktop-nav-links" class="hidden md:flex items-center space-x-1 lg:space-x-2 font-bold text-xs uppercase tracking-wider text-slate-800 relative z-10">
                 <a href="{% url 'home' %}#home" class="nav-item px-3 py-2 rounded-md border border-transparent hover:border-slate-200/80 hover:text-slate-950 hover:bg-slate-100/70 transition-all duration-200">Home</a>
+                <a href="{% url 'home' %}#solar_calculator" class="nav-item px-3 py-2 rounded-md border border-transparent hover:border-slate-200/80 hover:text-slate-950 hover:bg-slate-100/70 transition-all duration-200">Solar Calculator</a>
                 <a href="{% url 'home' %}#services" class="nav-item px-3 py-2 rounded-md border border-transparent hover:border-slate-200/80 hover:text-slate-950 hover:bg-slate-100/70 transition-all duration-200">Services</a>
                 <a href="{% url 'home' %}#projects" class="nav-item px-3 py-2 rounded-md border border-transparent hover:border-slate-200/80 hover:text-slate-950 hover:bg-slate-100/70 transition-all duration-200">Our Work</a>
                 
@@ -175,6 +158,7 @@
         <div id="mobile-menu" class="hidden md:hidden absolute top-full left-4 right-4 mt-2 bg-white/98 backdrop-blur-xl border border-slate-200 shadow-2xl rounded-md transition-all duration-200 transform scale-y-95 origin-top opacity-0 max-h-[calc(100vh-6rem)] overflow-y-auto z-50">
             <div id="mobile-nav-links" class="p-4 space-y-1 font-bold text-slate-800 text-xs uppercase tracking-wider">
                 <a href="{% url 'home' %}#home" class="mobile-nav-item block px-4 py-2.5 rounded-md hover:bg-slate-50 hover:text-amber-500 transition">Home</a>
+                <a href="{% url 'home' %}#solar_calculator" class="mobile-nav-item block px-4 py-2.5 rounded-md hover:bg-slate-50 hover:text-amber-500 transition">Solar Calculator</a>
                 <a href="{% url 'home' %}#services" class="mobile-nav-item block px-4 py-2.5 rounded-md hover:bg-slate-50 hover:text-amber-500 transition">Services</a>
                 <a href="{% url 'home' %}#projects" class="mobile-nav-item block px-4 py-2.5 rounded-md hover:bg-slate-50 hover:text-amber-500 transition">Our Work</a>
                 
@@ -211,18 +195,10 @@
             <!-- Main Information Grid Map -->
             <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-8 lg:gap-12 pb-12">
                 
-                <!-- Corporate Pillar Info Block with Matching Panel Grid Logo -->
+                <!-- Corporate Pillar Info Block -->
                 <div class="lg:col-span-4 space-y-4">
-                    <div class="flex items-center gap-3 text-xl font-black text-white tracking-tight">
-                        <svg class="w-6 h-6 text-amber-500" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                            <path d="M2 9L12 3L22 9L12 15L2 9Z" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                            <path d="M2 15L12 21L22 15" stroke="currentColor" stroke-width="1.5" stroke-linejoin="round"/>
-                            <path d="M2 9V15M22 9V15M12 15V21" stroke="currentColor" stroke-width="1.5"/>
-                            <path d="M12 5L4.5 9.5L12 14L19.5 9.5L12 5Z" fill="currentColor" class="text-amber-500"/>
-                            <path d="M12 5V14" stroke="black" stroke-width="0.75" opacity="0.3"/>
-                            <path d="M4.5 9.5H19.5" stroke="black" stroke-width="0.75" opacity="0.3"/>
-                        </svg>
-                        <span>SIP <span class="text-amber-500">INFRA</span></span>
+                    <div class="text-xl font-black text-white tracking-tight">
+                        SIP <span class="text-amber-500">INFRA</span>
                     </div>
                     <p class="text-xs text-slate-400 font-light leading-relaxed max-w-sm">
                         Designing high-yield captive solar assets and institutional power distribution networks securely across South India[cite: 1].
