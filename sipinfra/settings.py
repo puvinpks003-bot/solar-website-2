@@ -23,7 +23,7 @@ BASE_DIR = Path(__file__).resolve().parent.parent
 SECRET_KEY = 'django-insecure-$&dzo!2d6xd!^-7i*cjzau7xyhwki4ph+el99be6kmdcq$yjqc'
 
 # SECURITY WARNING: don't run with debug turned on in production!
-DEBUG = True
+DEBUG = False
 
 ALLOWED_HOSTS = [
     'solar-website-1-uaf8.vercel.app', 
