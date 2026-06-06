@@ -1,354 +1,393 @@
 <!DOCTYPE html>
-<html lang="en" class="scroll-smooth">
+<html lang="en">
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>SIP INFRA | Megawatt Solar Solutions Tamil Nadu</title>
-    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23f59e0b' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3Cpath fill='%23f59e0b' d='M5 13h14l-2 5H7l-2-5z'/%3E%3Cpath d='M12 13v5M8.5 15.5l7 0'/%3E%3C/svg%3E"/>
-    <script src="https://cdn.jsdelivr.net/npm/@tailwindcss/browser@4"></script>
+    <!-- Updated Favicon to Amber -->
+    <link rel="icon" type="image/svg+xml" href="data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' viewBox='0 0 24 24' fill='none' stroke='%23fbbf24' stroke-width='2' stroke-linecap='round' stroke-linejoin='round'%3E%3Cpath d='M12 2v2M12 20v2M4.93 4.93l1.41 1.41M17.66 17.66l1.41 1.41M2 12h2M20 12h2M6.34 17.66l-1.41 1.41M19.07 4.93l-1.41 1.41'/%3E%3Cpath fill='%23f59e0b' d='M5 13h14l-2 5H7l-2-5z'/%3E%3Cpath d='M12 13v5M8.5 15.5l7 0'/%3E%3C/svg%3E"/>
+    <link rel="preconnect" href="https://fonts.googleapis.com">
+    <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+    <link href="https://fonts.googleapis.com/css2?family=Space+Grotesk:wght@400;700;900&family=Inter:wght@300;400;600;700&family=JetBrains+Mono:wght@400;700&display=swap" rel="stylesheet">
     
     <style>
-        /* Advanced dynamic scroll progress indicator tracking */
+        /* CSS Variables - Monocrystalline Solar Theme */
+        :root {
+            --bg-deep: #020617; /* Deep Silicon Slate */
+            --bg-panel: rgba(15, 23, 42, 0.65); /* Glass Panel Blue */
+            --bg-darker: rgba(7, 11, 23, 0.8);
+            --border-glass: rgba(255, 255, 255, 0.1);
+            --accent-glow: #fbbf24; /* Sun Amber High */
+            --accent-dim: #f59e0b; /* Sun Amber Deep */
+            --text-main: #f8fafc;
+            --text-muted: #94a3b8;
+            --font-sans: 'Inter', sans-serif;
+            --font-display: 'Space Grotesk', sans-serif;
+            --font-mono: 'JetBrains Mono', monospace;
+        }
+
+        /* Base Reset & Globals */
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        html { scroll-behavior: smooth; }
+        body {
+            background-color: var(--bg-deep);
+            color: var(--text-main);
+            font-family: var(--font-sans);
+            overflow-x: hidden;
+            line-height: 1.6;
+            display: flex;
+            flex-direction: column;
+            min-height: 100vh;
+        }
+
+        h1, h2, h3, h4 { font-family: var(--font-display); text-transform: uppercase; }
+        .mono { font-family: var(--font-mono); }
+        .tracking-widest { letter-spacing: 0.1em; }
+        .text-accent { color: var(--accent-glow); }
+        .text-muted { color: var(--text-muted); }
+        .text-main { color: var(--text-main); }
+        
+        /* Global Canvas Background */
+        #particle-canvas {
+            position: fixed; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: -1; pointer-events: none; opacity: 0.4;
+        }
+
+        /* Scroll Progress Bar */
         #scroll-progress {
-            scale: 0 1;
+            position: fixed; top: 0; left: 0; width: 100%; height: 3px;
+            background: linear-gradient(90deg, var(--accent-dim), var(--accent-glow));
+            z-index: 9999; transform-origin: 0 50%;
             animation: scroll-watch linear both;
             animation-timeline: scroll(root);
         }
-        @keyframes scroll-watch {
-            to { scale: 1 1; }
+        @keyframes scroll-watch { to { transform: scaleX(1); } from { transform: scaleX(0); } }
+
+        /* --- Header & Navigation --- */
+        .premium-header {
+            position: fixed; top: 0; width: 100%; z-index: 1000;
+            padding: 1rem; transition: all 0.3s ease;
         }
-        
-        /* Ultra-Premium Glassmorphic Header Base */
-        .premium-glass-header {
-            background-color: transparent; 
-            backdrop-filter: blur(20px);
-            -webkit-backdrop-filter: blur(20px);
+        .nav-container {
+            max-width: 1200px; margin: 0 auto; height: 64px;
+            display: flex; align-items: center; justify-content: space-between;
+            padding: 0 1.5rem; background: rgba(2, 6, 23, 0.7);
+            backdrop-filter: blur(20px); -webkit-backdrop-filter: blur(20px);
+            border: 1px solid var(--border-glass); border-radius: 8px;
+            position: relative; box-shadow: 0 16px 40px rgba(0,0,0,0.4);
         }
 
-        /* ====================================================
-            SHARPENED LUXURY SOLAR BEAM TRACKING ENGINE
-           ====================================================
-        */
-        .snake-track-card {
-            position: relative;
-            background: rgba(255, 255, 255, 0.92);
-        }
-
-        /* The laser-cut vector pathway generating the sharp chasing beam element */
+        /* Sharpened Solar Beam Snake Track */
+        @property --snake-angle { syntax: '<angle>'; initial-value: 0deg; inherits: false; }
         .snake-track-card::before {
-            content: '';
-            position: absolute;
-            inset: -1.5px; /* Thinner border mask for an ultra-crisp, sharp trace */
-            border-radius: 6px; /* Matches the sharp external md configuration */
-            padding: 1.5px; 
-            
-            /* PREMIUM CRISP SPECTRUM:
-               Hard color stops break up the traditional flow, providing 
-               a sharp, intense laser-cut pinpoint of light.
-            */
-            background: conic-gradient(
-                from var(--snake-angle, 0deg),
-                #ffffff 0deg,      /* Sharp Leading Core */
-                #fbbf24 8deg,      /* Ultra-Focused Amber Beam */
-                #f97316 15deg,     /* High-Density Orange Accent */
-                transparent 20deg, /* Instant drop-off for extreme sharpness */
-                transparent 360deg
-            );
-            
-            /* High-fidelity browser masking bounds the graphic data to the outer edge exclusively */
+            content: ''; position: absolute; inset: -1px; border-radius: 8px; padding: 1.5px;
+            background: conic-gradient(from var(--snake-angle, 0deg), #ffffff 0deg, var(--accent-glow) 8deg, var(--accent-dim) 15deg, transparent 20deg, transparent 360deg);
             -webkit-mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
             mask: linear-gradient(#fff 0 0) content-box, linear-gradient(#fff 0 0);
-            -webkit-mask-composite: xor;
-            mask-composite: exclude;
-            pointer-events: none;
-            
-            /* Invokes the native modern CSS motion engine loop */
-            animation: snake-crawl 5s linear infinite;
+            -webkit-mask-composite: xor; mask-composite: exclude; pointer-events: none;
+            animation: snake-crawl 4s linear infinite;
+        }
+        @keyframes snake-crawl { 0% { --snake-angle: 0deg; } 100% { --snake-angle: 360deg; } }
+
+        /* Brand Logo */
+        .brand-logo {
+            font-family: var(--font-display); font-size: 1.25rem; font-weight: 900;
+            color: var(--text-main); text-decoration: none; letter-spacing: -0.02em;
+            display: flex; align-items: center; gap: 0.5rem; position: relative; z-index: 10;
+        }
+        .brand-logo span { color: var(--accent-glow); transition: 0.3s; }
+
+        /* Desktop Links */
+        .desktop-nav { display: flex; align-items: center; gap: 0.5rem; position: relative; z-index: 10; }
+        .nav-item {
+            font-family: var(--font-sans); font-size: 0.75rem; font-weight: 700;
+            text-transform: uppercase; letter-spacing: 0.05em; color: var(--text-muted);
+            text-decoration: none; padding: 0.5rem 1rem; border-radius: 4px;
+            border: 1px solid transparent; transition: all 0.3s ease; cursor: pointer;
+            background: transparent;
+        }
+        .nav-item:hover { color: var(--text-main); background: rgba(251, 191, 36, 0.05); }
+        .nav-item.active-pill {
+            color: var(--bg-deep); background: var(--accent-glow);
+            border-color: var(--accent-glow); box-shadow: 0 0 15px rgba(251, 191, 36, 0.3);
         }
 
-        /* Explicit Property Definition structure allows modern layout engines 
-          to interpolate the raw mathematical angles flawlessly in slow motion.
-        */
-        @property --snake-angle {
-            syntax: '<angle>';
-            initial-value: 0deg;
-            inherits: false;
+        /* Dropdown Setup */
+        .dropdown-wrapper { position: relative; padding: 1rem 0; }
+        .dropdown-panel {
+            position: absolute; top: 100%; left: 50%; transform: translateX(-50%) translateY(10px);
+            background: rgba(2, 6, 23, 0.95); backdrop-filter: blur(16px);
+            border: 1px solid var(--border-glass); border-radius: 6px; padding: 0.5rem;
+            min-width: 200px; opacity: 0; pointer-events: none; transition: all 0.3s ease; z-index: 50;
+        }
+        .dropdown-wrapper:hover .dropdown-panel { opacity: 1; pointer-events: auto; transform: translateX(-50%) translateY(0); }
+        .dropdown-link {
+            display: block; font-size: 0.75rem; color: var(--text-muted); text-decoration: none;
+            padding: 0.75rem 1rem; border-radius: 4px; transition: 0.2s;
+        }
+        .dropdown-link:hover { color: var(--accent-glow); background: rgba(255,255,255,0.05); }
+
+        /* Quote Button */
+        .btn-quote {
+            display: inline-flex; align-items: center; justify-content: center;
+            background: var(--text-main); color: var(--bg-deep); font-weight: 800; font-size: 0.75rem;
+            text-transform: uppercase; padding: 0.6rem 1.2rem; border-radius: 4px; text-decoration: none;
+            transition: all 0.3s; position: relative; z-index: 10; border: none; cursor: pointer;
+        }
+        .btn-quote:hover { background: var(--accent-glow); box-shadow: 0 0 15px rgba(251, 191, 36, 0.4); transform: translateY(-2px); }
+
+        /* Mobile Menu */
+        .mobile-toggle { display: none; background: transparent; border: none; color: var(--text-main); cursor: pointer; z-index: 10; padding: 0.5rem; }
+        .mobile-menu {
+            display: none; position: absolute; top: 100%; left: 1rem; right: 1rem; margin-top: 0.5rem;
+            background: rgba(2, 6, 23, 0.98); backdrop-filter: blur(16px); border: 1px solid var(--border-glass);
+            border-radius: 8px; padding: 1rem; flex-direction: column; gap: 0.5rem; z-index: 40;
+            box-shadow: 0 20px 40px rgba(0,0,0,0.5);
+        }
+        .mobile-menu.active { display: flex; animation: slideDown 0.3s ease forwards; }
+        @keyframes slideDown { from { opacity: 0; transform: translateY(-10px); } to { opacity: 1; transform: translateY(0); } }
+        
+        .divider { height: 1px; background: var(--border-glass); margin: 0.5rem 0; }
+
+        @media (max-width: 992px) {
+            .desktop-nav, .btn-quote { display: none; }
+            .mobile-toggle { display: block; }
         }
 
-        @keyframes snake-crawl {
-            0% {
-                --snake-angle: 0deg;
-            }
-            100% {
-                --snake-angle: 360deg;
-            }
+        /* --- Footer --- */
+        .footer {
+            background: var(--bg-darker); border-top: 1px solid var(--border-glass);
+            padding: 4rem 2rem 2rem; margin-top: auto; position: relative; z-index: 10;
+        }
+        .footer-grid {
+            max-width: 1200px; margin: 0 auto; display: grid; gap: 3rem;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); padding-bottom: 3rem;
+        }
+        .footer-col h5 { color: var(--text-main); font-size: 0.875rem; margin-bottom: 1.5rem; }
+        .footer-col ul { list-style: none; }
+        .footer-col ul li { margin-bottom: 0.75rem; }
+        .footer-col ul a { color: var(--text-muted); text-decoration: none; font-size: 0.875rem; transition: color 0.3s; }
+        .footer-col ul a:hover { color: var(--accent-glow); }
+        .footer-bottom {
+            max-width: 1200px; margin: 0 auto; padding-top: 1.5rem; border-top: 1px solid var(--border-glass);
+            display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 1rem;
+            font-size: 0.75rem; color: var(--text-muted);
         }
 
-        /* Desktop Solutions Hover Dropdown Mechanics */
-        @media (min-width: 768px) {
-            .dropdown-wrapper:hover .dropdown-panel {
-                opacity: 1;
-                pointer-events: auto;
-                transform: translateY(0);
-            }
-            .dropdown-wrapper:hover .dropdown-arrow {
-                transform: rotate(180deg);
-            }
-        }
-
-        /* DYNAMIC NAV LINK INLINE SPECIFICITY OVERRIDES */
-        .nav-item-active-pill {
-            color: #ffffff !important;
-            background-color: #0f172a !important; /* Deep Slate/Black base contrast color */
-            border: 1px solid rgba(255, 255, 255, 0.15) !important;
-            border-radius: 9999px !important; /* Elegant curved configuration tracking */
-            box-shadow: 0 4px 12px rgba(0, 0, 0, 0.08) !important;
-            text-shadow: 0 0 8px rgba(255, 255, 255, 0.4) !important;
-        }
-
-        /* ACTIONS DESK BUTTON BRIGHT CONTRAST FIXES */
-        .btn-quote-bright {
-            color: #ffffff !important;
-            text-shadow: 0 1px 3px rgba(0, 0, 0, 0.8), 0 0 4px rgba(255, 255, 255, 0.2);
-        }
-        .btn-quote-bright:hover {
-            color: #0f172a !important;
-            text-shadow: none !important;
-        }
+        /* Utility specific for main content */
+        main { flex-grow: 1; position: relative; z-index: 10; display: block; }
     </style>
 </head>
-<body class="bg-slate-50 font-sans text-slate-900 overflow-x-hidden flex flex-col min-h-screen">
+<body>
 
-    <div id="scroll-progress" class="fixed top-0 left-0 right-0 h-0.5 bg-gradient-to-r from-amber-500 via-orange-500 to-yellow-400 origin-left z-[110]"></div>
+    <div id="scroll-progress"></div>
+    <canvas id="particle-canvas"></canvas>
 
-    <header class="sticky top-0 z-50 w-full px-4 sm:px-6 lg:px-8 pt-4 pb-2 premium-glass-header">
-        
-        <div class="max-w-7xl mx-auto h-16 px-4 sm:px-6 flex items-center justify-between rounded-md shadow-[0_16px_40px_rgba(0,0,0,0.04)] border border-slate-200/50 backdrop-blur-md transition-all duration-300 snake-track-card">
+    <header class="premium-header">
+        <div class="nav-container snake-track-card">
             
-            <a href="{% url 'home' %}" class="group flex items-center gap-2 outline-none shrink-0 px-2.5 py-1.5 rounded-md border border-transparent hover:border-slate-200 hover:bg-slate-50/80 transition-all duration-300 relative z-10">
-                <div class="text-xl font-black text-slate-900 tracking-tight group-hover:scale-[1.01] transition-transform duration-300">
-                    SIP <span class="text-amber-500 group-hover:text-amber-600 transition-colors duration-300">INFRA</span>
-                </div>
+            <!-- Brand -->
+            <a href="{% url 'home' %}" class="brand-logo">
+                SIP <span>INFRA</span>
             </a>
             
-            <div id="desktop-nav-links" class="hidden md:flex items-center space-x-1 lg:space-x-1.5 font-bold text-xs uppercase tracking-wider text-slate-600 relative z-10">
-                <a id="nav-home-link" href="{% url 'home' %}#home" class="nav-item px-3.5 py-2.5 rounded-md border border-transparent hover:text-slate-950 hover:bg-slate-100/80 transition-all duration-200">Home</a>
-                <a href="{% url 'home' %}#solar_calculator" class="nav-item px-3.5 py-2.5 rounded-md border border-transparent hover:text-slate-950 hover:bg-slate-100/80 transition-all duration-200">Solar Calculator</a>
-                <a href="{% url 'projects_portfolio' %}" class="nav-item px-3.5 py-2.5 rounded-md border border-transparent hover:text-slate-950 hover:bg-slate-100/80 transition-all duration-200">Portfolio Map</a>
-                <a href="{% url 'home' %}#services" class="nav-item px-3.5 py-2.5 rounded-md border border-transparent hover:text-slate-950 hover:bg-slate-100/80 transition-all duration-200">Services</a>
-                <a href="{% url 'home' %}#projects" class="nav-item px-3.5 py-2.5 rounded-md border border-transparent hover:text-slate-950 hover:bg-slate-100/80 transition-all duration-200">Our Work</a>
+            <!-- Desktop Navigation -->
+            <nav class="desktop-nav">
+                <a href="{% url 'home' %}#home" class="nav-item">Home</a>
+                <a href="{% url 'home' %}#calculator" class="nav-item">Solar Calculator</a>
+                <a href="{% url 'projects_portfolio' %}" class="nav-item">Portfolio Map</a>
+                <a href="{% url 'home' %}#services" class="nav-item">Services</a>
+                <a href="{% url 'home' %}#projects" class="nav-item">Our Work</a>
                 
-                <div class="relative dropdown-wrapper py-2">
-                    <button type="button" id="solutions-dropdown-btn" class="nav-item flex items-center gap-1 px-3.5 py-2.5 rounded-md border border-transparent hover:text-slate-950 hover:bg-slate-100/80 transition-all duration-200 cursor-pointer uppercase font-bold text-xs tracking-wider text-slate-600 outline-none">
-                        <span id="solutions-btn-text">Our Solutions</span>
-                        <svg class="w-3 h-3 text-slate-400 group-hover:text-slate-950 transition-transform duration-200 dropdown-arrow" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                            <path stroke-linecap="round" stroke-linejoin="round" stroke-width="2.5" d="M19 9l-7 7-7-7" />
-                        </svg>
+                <div class="dropdown-wrapper">
+                    <button class="nav-item" style="display: flex; align-items: center; gap: 0.25rem;">
+                        <span id="solutions-text">Solutions</span>
+                        <svg width="12" height="12" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2"><path d="M19 9l-7 7-7-7"/></svg>
                     </button>
-
-                    <div class="dropdown-panel absolute left-1/2 -translate-x-1/2 top-full mt-2 w-64 bg-white/95 backdrop-blur-xl border border-slate-200/80 shadow-2xl rounded-md p-1.5 opacity-0 pointer-events-none transform -translate-y-2 transition-all duration-200 z-50">
-                        <a href="{% url 'industrial' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">Industrial MW</a>
-                        <a href="{% url 'commercial' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">Commercial CAPEX</a>
-                        <a href="{% url 'residential' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">Residential</a>
-                        <a href="{% url 'subsidy' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">Subsidy Core</a>
-                        <a href="{% url 'engineering_epc' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">EPC Spec</a>
-                        <a href="{% url 'operation_maintenance' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">O&M Operations</a>
-                        <a href="{% url 'investor_relations' %}" class="nav-item block px-4 py-2.5 text-[11px] rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition duration-150">ESG Deck</a> 
+                    <div class="dropdown-panel">
+                        <a href="{% url 'industrial' %}" class="dropdown-link">Industrial MW</a>
+                        <a href="{% url 'commercial' %}" class="dropdown-link">Commercial CAPEX</a>
+                        <a href="{% url 'residential' %}" class="dropdown-link">Residential</a>
+                        <a href="{% url 'subsidy' %}" class="dropdown-link">Subsidy Core</a>
+                        <a href="{% url 'engineering_epc' %}" class="dropdown-link">EPC Spec</a>
+                        <a href="{% url 'operation_maintenance' %}" class="dropdown-link">O&M Operations</a>
+                        <a href="{% url 'investor_relations' %}" class="dropdown-link">ESG Deck</a> 
                     </div>
                 </div>
-            </div>
+            </nav>
 
-            <div class="hidden md:flex items-center shrink-0 relative z-10">
-                <a href="{% url 'home' %}#contact" class="btn-quote-bright px-5 h-10 flex items-center justify-center bg-slate-950 font-extrabold rounded-md shadow-md shadow-slate-950/10 hover:bg-amber-500 transform hover:-translate-y-0.5 active:translate-y-0 transition-all duration-200 text-xs tracking-wider uppercase">
-                    Get a Quote
-                </a>
-            </div>
+            <a href="{% url 'home' %}#contact" class="btn-quote">Get a Quote</a>
 
-            <div class="flex items-center md:hidden relative z-10">
-                <button type="button" id="menu-toggle-btn" class="inline-flex items-center justify-center p-2 rounded-md text-slate-800 hover:bg-slate-100 focus:outline-none transition cursor-pointer" aria-label="Toggle Menu">
-                    <svg id="menu-icon" class="h-6 w-6" fill="none" stroke="currentColor" viewBox="0 0 24 24">
-                        <path id="menu-icon-path" stroke-linecap="round" stroke-linejoin="round" stroke-width="2" d="M4 6h16M4 12h16M4 18h16"/>
-                    </svg>
-                </button>
-            </div>
+            <!-- Mobile Toggle -->
+            <button class="mobile-toggle" id="menu-btn">
+                <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                    <path d="M4 6h16M4 12h16M4 18h16" id="menu-icon"/>
+                </svg>
+            </button>
         </div>
 
-        <div id="mobile-menu" class="hidden md:hidden absolute top-full left-4 right-4 mt-2 bg-white/98 backdrop-blur-xl border border-slate-200 shadow-2xl rounded-md transition-all duration-200 transform scale-y-95 origin-top opacity-0 max-h-[calc(100vh-6rem)] overflow-y-auto z-50">
-            <div id="mobile-nav-links" class="p-4 space-y-1 font-bold text-slate-600 text-xs uppercase tracking-wider">
-                <a id="mobile-home-link" href="{% url 'home' %}#home" class="mobile-nav-item block px-4 py-3 rounded-md hover:bg-slate-50 hover:text-slate-950 transition">Home</a>
-                <a href="{% url 'home' %}#solar_calculator" class="mobile-nav-item block px-4 py-3 rounded-md hover:bg-slate-50 hover:text-slate-950 transition">Solar Calculator</a>
-                <a href="{% url 'projects_portfolio' %}" class="mobile-nav-item block px-4 py-3 rounded-md hover:bg-slate-50 hover:text-slate-950 transition">Portfolio Map</a>
-                <a href="{% url 'home' %}#services" class="mobile-nav-item block px-4 py-3 rounded-md hover:bg-slate-50 hover:text-slate-950 transition">Services</a>
-                <a href="{% url 'home' %}#projects" class="mobile-nav-item block px-4 py-3 rounded-md hover:bg-slate-50 hover:text-slate-950 transition">Our Work</a>
-                
-                <div class="h-px bg-slate-100 my-3"></div>
-                <div class="text-[10px] text-slate-400 tracking-widest pl-4 mb-1 uppercase font-black">Solutions & Portfolio</div>
-
-                <a href="{% url 'industrial' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">Industrial MW</a>
-                <a href="{% url 'commercial' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">Commercial CAPEX</a>
-                <a href="{% url 'residential' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">Residential</a>
-                <a href="{% url 'subsidy' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">Subsidy Core</a>
-                <a href="{% url 'engineering_epc' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">EPC Spec</a>
-                <a href="{% url 'operation_maintenance' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">O&M Operations</a>
-                <a href="{% url 'investor_relations' %}" class="mobile-nav-item block px-4 py-2.5 rounded-md text-slate-700 hover:bg-slate-50 hover:text-amber-600 transition">ESG Deck</a> 
-                
-                <div class="pt-4 mt-2">
-                    <a href="{% url 'home' %}#contact" class="btn-quote-bright mobile-nav-item block text-center w-full bg-slate-950 font-extrabold py-3.5 rounded-md shadow-md hover:bg-amber-500 transition text-xs tracking-wider uppercase">
-                        Get a Quote
-                    </a>
-                </div>
-            </div>
+        <!-- Mobile Menu Panel -->
+        <div class="mobile-menu" id="mobile-menu">
+            <a href="{% url 'home' %}#home" class="nav-item">Home</a>
+            <a href="{% url 'home' %}#calculator" class="nav-item">Solar Calculator</a>
+            <a href="{% url 'projects_portfolio' %}" class="nav-item">Portfolio Map</a>
+            <a href="{% url 'home' %}#services" class="nav-item">Services</a>
+            <a href="{% url 'home' %}#projects" class="nav-item">Our Work</a>
+            
+            <div class="divider"></div>
+            <span class="mono tracking-widest text-muted" style="font-size: 0.65rem; padding: 0 1rem;">// SOLUTIONS</span>
+            
+            <a href="{% url 'industrial' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">Industrial MW</a>
+            <a href="{% url 'commercial' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">Commercial CAPEX</a>
+            <a href="{% url 'residential' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">Residential</a>
+            <a href="{% url 'subsidy' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">Subsidy Core</a>
+            <a href="{% url 'engineering_epc' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">EPC Spec</a>
+            <a href="{% url 'operation_maintenance' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">O&M Operations</a>
+            <a href="{% url 'investor_relations' %}" class="nav-item" style="color: var(--text-main); font-weight: 400;">ESG Deck</a> 
+            
+            <div class="divider"></div>
+            <a href="{% url 'home' %}#contact" class="btn-quote" style="display: block; text-align: center; margin-top: 0.5rem;">Get a Quote</a>
         </div>
     </header>
 
-    <main class="w-full flex-grow relative z-10">
+    <main>
         {% block content %}
         {% endblock %}
     </main>
 
-    <footer class="bg-slate-950 text-slate-400 pt-16 pb-12 px-4 sm:px-6 lg:px-8 border-t border-slate-900 relative z-30">
-        <div class="max-w-7xl mx-auto">
-            
-            <div class="grid grid-cols-1 md:grid-cols-4 lg:grid-cols-12 gap-8 lg:gap-12 pb-12">
-                
-                <div class="lg:col-span-4 space-y-4">
-                    <div class="text-xl font-black text-white tracking-tight">
-                        SIP <span class="text-amber-500">INFRA</span>
-                    </div>
-                    <p class="text-xs text-slate-400 font-light leading-relaxed max-w-sm">
-                        Designing high-yield captive solar assets and institutional power distribution networks securely across South India.
-                    </p>
-                </div>
-
-                <div class="lg:col-span-2 space-y-3">
-                    <h5 class="text-xs font-bold text-slate-200 tracking-wider">Company</h5>
-                    <ul class="space-y-2 text-xs font-light">
-                        <li><a href="{% url 'home' %}#home" class="hover:text-white transition-colors duration-150">Overview</a></li>
-                        <li><a href="{% url 'home' %}#services" class="hover:text-white transition-colors duration-150">Capabilities</a></li>
-                        <li><a href="{% url 'home' %}#projects" class="hover:text-white transition-colors duration-150">Our Work</a></li>
-                    </ul>
-                </div>
-
-                <div class="lg:col-span-3 space-y-3">
-                    <h5 class="text-xs font-bold text-slate-200 tracking-wider">Solar Solutions</h5>
-                    <ul class="space-y-2 text-xs font-light">
-                        <li><a href="{% url 'industrial' %}" class="hover:text-white transition-colors duration-150">Industrial Megawatt Plants</a></li>
-                        <li><a href="{% url 'commercial' %}" class="hover:text-white transition-colors duration-150">Commercial Energy Arrays</a></li>
-                        <li><a href="{% url 'residential' %}" class="hover:text-white transition-colors duration-150">Residential Infrastructure</a></li>
-                    </ul>
-                </div>
-
-                <div class="lg:col-span-3 space-y-3">
-                    <h5 class="text-xs font-bold text-slate-200 tracking-wider">Operations</h5>
-                    <ul class="space-y-2 text-xs font-light">
-                        <li><a href="{% url 'subsidy' %}" class="hover:text-white transition-colors duration-150">Subsidy Management</a></li>
-                        <li><a href="{% url 'operation_maintenance' %}" class="hover:text-white transition-colors duration-150">Asset Maintenance (O&M)</a></li>
-                        <li><a href="{% url 'investor_relations' %}" class="hover:text-white transition-colors duration-150">Investor Relations</a></li>
-                    </ul>
-                </div>
+    <footer class="footer">
+        <div class="footer-grid">
+            <div class="footer-col" style="grid-column: span 2;">
+                <div class="brand-logo" style="margin-bottom: 1rem;">SIP <span>INFRA</span></div>
+                <p style="font-size: 0.875rem; max-width: 300px;">Designing high-yield captive solar assets and institutional power distribution networks securely across South India.</p>
             </div>
-
-            <div class="pt-8 border-t border-slate-900 flex flex-col sm:flex-row justify-between items-center gap-4 text-[11px] text-slate-500 font-light tracking-wide">
-                <div class="text-center sm:text-left">
-                    &copy; 2026 SIP INFRA. Clean Infrastructure Management. All Rights Reserved.
-                </div>
-                
-                <div class="flex items-center gap-4 font-mono text-[10px] text-slate-600">
-                    <span>CEIG COMPLIANT</span>
-                    <span class="w-1 h-1 rounded-full bg-slate-800"></span>
-                    <span>TAMIL NADU</span>
-                </div>
+            <div class="footer-col">
+                <h5>Company</h5>
+                <ul>
+                    <li><a href="{% url 'home' %}#home">Overview</a></li>
+                    <li><a href="{% url 'home' %}#services">Capabilities</a></li>
+                    <li><a href="{% url 'home' %}#projects">Our Work</a></li>
+                </ul>
             </div>
-
+            <div class="footer-col">
+                <h5>Solar Solutions</h5>
+                <ul>
+                    <li><a href="{% url 'industrial' %}">Industrial Megawatt Plants</a></li>
+                    <li><a href="{% url 'commercial' %}">Commercial Energy Arrays</a></li>
+                    <li><a href="{% url 'residential' %}">Residential Infrastructure</a></li>
+                </ul>
+            </div>
+            <div class="footer-col">
+                <h5>Operations</h5>
+                <ul>
+                    <li><a href="{% url 'subsidy' %}">Subsidy Management</a></li>
+                    <li><a href="{% url 'operation_maintenance' %}">Asset Maintenance (O&M)</a></li>
+                    <li><a href="{% url 'investor_relations' %}">Investor Relations</a></li>
+                </ul>
+            </div>
+        </div>
+        <div class="footer-bottom">
+            <div>&copy; 2026 SIP INFRA. Clean Infrastructure Management. All Rights Reserved.</div>
+            <div class="mono tracking-widest" style="display: flex; gap: 1rem; align-items: center;">
+                <span>CEIG COMPLIANT</span>
+                <span style="width: 4px; height: 4px; background: var(--accent-dim); border-radius: 50%;"></span>
+                <span>TAMIL NADU</span>
+            </div>
         </div>
     </footer>
 
     <script>
-document.addEventListener("DOMContentLoaded", () => {
-    const mobileMenu = document.getElementById('mobile-menu');
-    const menuToggleBtn = document.getElementById('menu-toggle-btn');
-    const iconPath = document.getElementById('menu-icon-path');
-    const navLinks = document.querySelectorAll('.nav-item, .mobile-nav-item');
-    const solutionsBtnText = document.getElementById('solutions-btn-text');
-    const solutionsBtn = document.getElementById('solutions-dropdown-btn');
+        // --- Particle Canvas Engine (Solar Amber Update) ---
+        const canvas = document.getElementById('particle-canvas');
+        const ctx = canvas.getContext('2d');
+        let width, height;
+        let particles = [];
 
-    // --- UTILITIES ---
-    function removeActiveStyles() {
-        navLinks.forEach(el => {
-            el.classList.remove("nav-item-active-pill");
-            el.style.cssText = ''; // Clear inline styles
-        });
-        if (solutionsBtn) solutionsBtn.classList.remove("nav-item-active-pill");
-    }
+        function initCanvas() {
+            width = canvas.width = window.innerWidth;
+            height = canvas.height = window.innerHeight;
+            particles = [];
+            const particleCount = Math.floor(width * height / 18000); 
 
-    function toggleMobileMenu() {
-        const isHidden = mobileMenu.classList.contains('hidden');
-        mobileMenu.classList.toggle('hidden', !isHidden);
-        setTimeout(() => {
-            mobileMenu.classList.toggle('scale-y-100', isHidden);
-            mobileMenu.classList.toggle('opacity-100', isHidden);
-            mobileMenu.classList.toggle('scale-y-95', !isHidden);
-            mobileMenu.classList.toggle('opacity-0', !isHidden);
-        }, 10);
-        iconPath.setAttribute('d', isHidden ? 'M6 18L18 6M6 6l12 12' : 'M4 6h16M4 12h16M4 18h16');
-    }
-
-    // --- PAGE/URL STATE MATCHER (For sub-pages) ---
-    function updateActiveByPath() {
-        const path = window.location.pathname;
-        let matched = false;
-
-        navLinks.forEach(link => {
-            const href = link.getAttribute('href');
-            if (!href || href === "#") return;
-
-            // Check if current path matches link URL (ignoring hash)
-            if (path !== '/' && href.includes(path) && !href.includes('#')) {
-                link.classList.add("nav-item-active-pill");
-                matched = true;
-
-                // If inside dropdown, update parent button text/state
-                if (link.closest('.dropdown-panel')) {
-                    if (solutionsBtnText) solutionsBtnText.innerText = link.innerText.trim();
-                    if (solutionsBtn) solutionsBtn.classList.add("nav-item-active-pill");
-                }
-            }
-        });
-        return matched;
-    }
-
-    // --- SCROLLSPY (For Home page sections) ---
-    const sections = document.querySelectorAll('section[id], div[id="solar_calculator"]');
-    const observer = new IntersectionObserver((entries) => {
-        entries.forEach(entry => {
-            if (entry.isIntersecting) {
-                removeActiveStyles();
-                const id = entry.target.getAttribute('id');
-                document.querySelectorAll(`a[href*="#${id}"]`).forEach(link => {
-                    link.classList.add("nav-item-active-pill");
+            for(let i = 0; i < particleCount; i++) {
+                particles.push({
+                    x: Math.random() * width, y: Math.random() * height,
+                    vx: (Math.random() - 0.5) * 0.4, vy: (Math.random() - 0.5) * 0.4,
+                    radius: Math.random() * 1.5 + 0.5
                 });
             }
+        }
+
+        function drawParticles() {
+            ctx.clearRect(0, 0, width, height);
+            ctx.fillStyle = '#fbbf24'; // Sun Amber Particles
+            ctx.strokeStyle = 'rgba(251, 191, 36, 0.15)'; // Sun Amber Links
+
+            for(let i = 0; i < particles.length; i++) {
+                let p = particles[i];
+                p.x += p.vx; p.y += p.vy;
+                if(p.x < 0 || p.x > width) p.vx *= -1;
+                if(p.y < 0 || p.y > height) p.vy *= -1;
+                ctx.beginPath(); ctx.arc(p.x, p.y, p.radius, 0, Math.PI * 2); ctx.fill();
+
+                for(let j = i + 1; j < particles.length; j++) {
+                    let p2 = particles[j];
+                    let dist = Math.sqrt(Math.pow(p.x - p2.x, 2) + Math.pow(p.y - p2.y, 2));
+                    if(dist < 130) {
+                        ctx.beginPath(); ctx.moveTo(p.x, p.y); ctx.lineTo(p2.x, p2.y); ctx.stroke();
+                    }
+                }
+            }
+            requestAnimationFrame(drawParticles);
+        }
+        window.addEventListener('resize', initCanvas);
+        initCanvas(); drawParticles();
+
+        // --- Navigation Logic ---
+        document.addEventListener("DOMContentLoaded", () => {
+            const menuBtn = document.getElementById('menu-btn');
+            const mobileMenu = document.getElementById('mobile-menu');
+            const menuIcon = document.getElementById('menu-icon');
+            const navLinks = document.querySelectorAll('.nav-item');
+
+            // Toggle Mobile Menu
+            menuBtn.addEventListener('click', () => {
+                mobileMenu.classList.toggle('active');
+                if(mobileMenu.classList.contains('active')) {
+                    menuIcon.setAttribute('d', 'M6 18L18 6M6 6l12 12');
+                } else {
+                    menuIcon.setAttribute('d', 'M4 6h16M4 12h16M4 18h16');
+                }
+            });
+
+            // Active State Matcher
+            function updateActive() {
+                navLinks.forEach(link => link.classList.remove('active-pill'));
+                const path = window.location.pathname;
+                navLinks.forEach(link => {
+                    const href = link.getAttribute('href');
+                    if (href && href !== "#" && path !== '/' && href.includes(path) && !href.includes('#')) {
+                        link.classList.add('active-pill');
+                    }
+                });
+            }
+            updateActive();
+
+            // Scrollspy logic for single-page anchors
+            const observer = new IntersectionObserver((entries) => {
+                entries.forEach(entry => {
+                    if (entry.isIntersecting) {
+                        const id = entry.target.getAttribute('id');
+                        navLinks.forEach(link => link.classList.remove('active-pill'));
+                        document.querySelectorAll(`.nav-item[href*="#${id}"]`).forEach(link => {
+                            link.classList.add('active-pill');
+                        });
+                    }
+                });
+            }, { rootMargin: '-30% 0px -70% 0px' });
+
+            document.querySelectorAll('section[id]').forEach(s => observer.observe(s));
         });
-    }, { root: null, rootMargin: '-30% 0px -60% 0px', threshold: 0 });
-
-    // Initialization
-    if (menuToggleBtn) menuToggleBtn.addEventListener('click', toggleMobileMenu);
-    
-    // Only run scrollspy if we are on the homepage or hash links exist
-    if (sections.length > 0) {
-        sections.forEach(s => observer.observe(s));
-    }
-
-    // Run path-based check first; if no sub-page match, fallback to scrollspy behavior
-    if (!updateActiveByPath()) {
-        // Add click listeners for manual override
-        navLinks.forEach(link => link.addEventListener('click', () => {
-            removeActiveStyles();
-            link.classList.add("nav-item-active-pill");
-            if (mobileMenu && !mobileMenu.classList.contains('hidden')) toggleMobileMenu();
-        }));
-    }
-});
-</script>
+    </script>
 </body>
 </html>
